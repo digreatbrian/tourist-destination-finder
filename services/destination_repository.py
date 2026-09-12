@@ -1,4 +1,4 @@
-from tourist_destination_finder.models.destination import Destination
+from models.destination import Destination
 
 
 class DestinationRepository:

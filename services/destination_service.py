@@ -1,5 +1,7 @@
 class DestinationService:
-    """Business logic boundary for destination filtering/recommendations."""
+    """
+    Business logic boundary for destination filtering/recommendations.
+    """
 
     def __init__(self, repository):
         self.repository = repository
