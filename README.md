@@ -100,7 +100,7 @@ python main.py
 
 AI assistance is allowed. **Claude** and **Codex** are recommended.
 
-Whether code is written manually or generated with AI, you and the AI must strictly follow the [CODE_STYLE_GUIDE.md](https://github.com/digreatbrian/tourist-destination-finder/blob/main/CODE_STYLE_GUIDE.md).
+Whether code is written manually or generated with AI, you and the AI must strictly follow the [CODE_STYLE_GUIDE.md](https://github.com/digreatbrian/tourist-destination-finder/blob/main/CODE_STYLE.md).
 
 > **Important:** Contributions that do not follow the code style guide are prohibited, as they make collaboration and code maintenance more difficult.
 
