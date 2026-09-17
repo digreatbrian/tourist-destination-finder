@@ -1,10 +1,16 @@
 """
-SQLite database setup and connection management for the application.
+SQLAlchemy engine and session setup for the application database.
 """
 
 import os
-import sqlite3
 from pathlib import Path
+from typing import Any
+
+from sqlalchemy import create_engine, event
+from sqlalchemy.engine import URL, Engine
+from sqlalchemy.orm import Session, sessionmaker
+
+from models.database_models import Base
 
 
 DATABASE_PATH_ENVIRONMENT_VARIABLE = "TOURIST_DESTINATION_DATABASE"
@@ -14,12 +20,12 @@ DEFAULT_DATABASE_PATH = DEFAULT_DATABASE_DIRECTORY / "destinations.db"
 
 class Database:
     """
-    Manages the local SQLite database used by the application.
+    Manages the SQLAlchemy engine, sessions, and database schema.
     """
 
     def __init__(self, database_path: str | Path | None = None) -> None:
         """
-        Initializes the database configuration.
+        Initializes the SQLAlchemy database configuration.
 
         Args:
             database_path: Optional path for the SQLite database. When omitted,
@@ -31,53 +37,56 @@ class Database:
         )
         self.database_path = Path(configured_path or DEFAULT_DATABASE_PATH).expanduser()
 
-        # Create the parent directory before opening the database
+        # Create the parent directory before creating the engine
         self.database_path.parent.mkdir(parents=True, exist_ok=True)
 
-        # Create tables and indexes required by the repository
+        # Build the engine and session factory
+        database_url = URL.create(
+            drivername="sqlite",
+            database=str(self.database_path),
+        )
+        self.engine: Engine = create_engine(database_url, future=True)
+
+        # Enable SQLite foreign-key enforcement for every connection
+        event.listen(self.engine, "connect", self._enable_foreign_keys)
+
+        self.session_factory = sessionmaker(
+            bind=self.engine,
+            class_=Session,
+            expire_on_commit=False,
+        )
+
+        # Create tables declared by the SQLAlchemy models
         self.initialize_schema()
 
-    def connect(self) -> sqlite3.Connection:
+    def create_session(self) -> Session:
         """
-        Opens a configured SQLite connection.
+        Creates a new SQLAlchemy session.
 
         Returns:
-            A SQLite connection configured to return rows by column name.
+            A new database session owned by the caller.
         """
-        connection = sqlite3.connect(self.database_path)
-        connection.row_factory = sqlite3.Row
-        connection.execute("PRAGMA foreign_keys = ON")
-        return connection
+        return self.session_factory()
 
     def initialize_schema(self) -> None:
         """
-        Creates the destination and saved-destination tables if needed.
+        Creates all declared database tables if they do not exist.
         """
-        with self.connect() as connection:
-            connection.executescript(
-                """
-                CREATE TABLE IF NOT EXISTS destinations (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT NOT NULL,
-                    location TEXT NOT NULL,
-                    category TEXT NOT NULL,
-                    description TEXT NOT NULL DEFAULT '',
-                    image_url TEXT NOT NULL DEFAULT '',
-                    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    UNIQUE(name, location)
-                );
+        Base.metadata.create_all(self.engine)
 
-                CREATE TABLE IF NOT EXISTS saved_destinations (
-                    destination_id INTEGER PRIMARY KEY,
-                    saved_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    FOREIGN KEY (destination_id) REFERENCES destinations(id)
-                        ON DELETE CASCADE
-                );
+    @staticmethod
+    def _enable_foreign_keys(
+        dbapi_connection: Any, connection_record: Any
+    ) -> None:
+        """
+        Enables foreign-key enforcement for a SQLite connection.
 
-                CREATE INDEX IF NOT EXISTS idx_destinations_category
-                    ON destinations(category);
-
-                CREATE INDEX IF NOT EXISTS idx_destinations_location
-                    ON destinations(location);
-                """
-            )
+        Args:
+            dbapi_connection: Raw SQLite connection created by SQLAlchemy.
+            connection_record: SQLAlchemy connection pool record.
+        """
+        cursor = dbapi_connection.cursor()
+        try:
+            cursor.execute("PRAGMA foreign_keys=ON")
+        finally:
+            cursor.close()

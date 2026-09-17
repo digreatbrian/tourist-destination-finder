@@ -1,9 +1,10 @@
 """
-Database repository for tourist destinations and saved places.
+SQLAlchemy repository for tourist destinations and saved places.
 """
 
-import sqlite3
+from sqlalchemy import or_, select
 
+from models.database_models import DestinationRecord, SavedDestinationRecord
 from models.destination import Destination
 from services.database import Database
 
@@ -21,7 +22,7 @@ DEFAULT_DESTINATIONS = (
 
 class DestinationRepository:
     """
-    Provides persistence operations for destination records.
+    Provides SQLAlchemy persistence operations for destination records.
     """
 
     def __init__(self, database: Database | None = None) -> None:
@@ -49,21 +50,18 @@ class DestinationRepository:
         """
         normalized_search_term = search_term.strip()
         search_pattern = f"%{normalized_search_term}%"
+        statement = select(DestinationRecord).where(
+            or_(
+                DestinationRecord.name.ilike(search_pattern),
+                DestinationRecord.location.ilike(search_pattern),
+                DestinationRecord.category.ilike(search_pattern),
+            )
+        ).order_by(DestinationRecord.name)
 
-        with self.database.connect() as connection:
-            rows = connection.execute(
-                """
-                SELECT id, name, location, category, description, image_url
-                FROM destinations
-                WHERE name LIKE ? COLLATE NOCASE
-                   OR location LIKE ? COLLATE NOCASE
-                   OR category LIKE ? COLLATE NOCASE
-                ORDER BY name
-                """,
-                (search_pattern, search_pattern, search_pattern),
-            ).fetchall()
+        with self.database.create_session() as session:
+            records = session.scalars(statement).all()
 
-        return [self._to_destination(row) for row in rows]
+        return [self._to_destination(record) for record in records]
 
     def list_saved_destinations(self) -> list[Destination]:
         """
@@ -72,18 +70,16 @@ class DestinationRepository:
         Returns:
             Saved destinations ordered from most recently saved.
         """
-        with self.database.connect() as connection:
-            rows = connection.execute(
-                """
-                SELECT d.id, d.name, d.location, d.category,
-                       d.description, d.image_url
-                FROM destinations AS d
-                INNER JOIN saved_destinations AS s ON s.destination_id = d.id
-                ORDER BY s.saved_at DESC, d.name
-                """
-            ).fetchall()
+        statement = (
+            select(DestinationRecord)
+            .join(SavedDestinationRecord)
+            .order_by(SavedDestinationRecord.saved_at.desc(), DestinationRecord.name)
+        )
 
-        return [self._to_destination(row) for row in rows]
+        with self.database.create_session() as session:
+            records = session.scalars(statement).all()
+
+        return [self._to_destination(record) for record in records]
 
     def save_destination(self, destination_id: int) -> None:
         """
@@ -95,21 +91,16 @@ class DestinationRepository:
         Raises:
             ValueError: If the destination does not exist.
         """
-        with self.database.connect() as connection:
-            destination_exists = connection.execute(
-                "SELECT 1 FROM destinations WHERE id = ?",
-                (destination_id,),
-            ).fetchone()
-            if destination_exists is None:
+        with self.database.create_session() as session:
+            destination = session.get(DestinationRecord, destination_id)
+            if destination is None:
                 raise ValueError(f"Destination {destination_id} does not exist.")
 
-            connection.execute(
-                """
-                INSERT OR IGNORE INTO saved_destinations(destination_id)
-                VALUES (?)
-                """,
-                (destination_id,),
-            )
+            saved_destination = session.get(SavedDestinationRecord, destination_id)
+            if saved_destination is None:
+                session.add(SavedDestinationRecord(destination=destination))
+
+            session.commit()
 
     def remove_saved_destination(self, destination_id: int) -> None:
         """
@@ -118,44 +109,45 @@ class DestinationRepository:
         Args:
             destination_id: Database identifier of the destination to remove.
         """
-        with self.database.connect() as connection:
-            connection.execute(
-                "DELETE FROM saved_destinations WHERE destination_id = ?",
-                (destination_id,),
-            )
+        with self.database.create_session() as session:
+            saved_destination = session.get(SavedDestinationRecord, destination_id)
+            if saved_destination is not None:
+                session.delete(saved_destination)
+                session.commit()
 
     def seed_destinations(self) -> None:
         """
         Inserts the built-in destination catalog when records are absent.
         """
-        with self.database.connect() as connection:
-            for destination in DEFAULT_DESTINATIONS:
-                connection.execute(
-                    """
-                    INSERT OR IGNORE INTO destinations(
-                        name, location, category, description, image_url
+        with self.database.create_session() as session:
+            for destination_data in DEFAULT_DESTINATIONS:
+                existing_destination = session.scalar(
+                    select(DestinationRecord).where(
+                        DestinationRecord.name == destination_data["name"],
+                        DestinationRecord.location == destination_data["location"],
                     )
-                    VALUES (:name, :location, :category, :description, :image_url)
-                    """,
-                    destination,
                 )
+                if existing_destination is None:
+                    session.add(DestinationRecord(**destination_data))
+
+            session.commit()
 
     @staticmethod
-    def _to_destination(row: sqlite3.Row) -> Destination:
+    def _to_destination(record: DestinationRecord) -> Destination:
         """
-        Converts a database row into the application model.
+        Converts a SQLAlchemy record into the application model.
 
         Args:
-            row: SQLite row containing destination columns.
+            record: SQLAlchemy destination record.
 
         Returns:
             A destination model.
         """
         return Destination(
-            destination_id=row["id"],
-            name=row["name"],
-            location=row["location"],
-            category=row["category"],
-            description=row["description"],
-            image_url=row["image_url"],
+            destination_id=record.id,
+            name=record.name,
+            location=record.location,
+            category=record.category,
+            description=record.description,
+            image_url=record.image_url,
         )
