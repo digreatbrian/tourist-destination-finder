@@ -94,9 +94,14 @@ Run the application with:
 python main.py
 ```
 
+The application stores destinations and saved places in a local SQLite database
+at `~/.tourist_destination_finder/destinations.db`. Set the
+`TOURIST_DESTINATION_DATABASE` environment variable to use a different database
+path, such as a temporary database during tests.
+
 ---
 
-## AI Assistance & Code Style
+## AI Assistance & Sean Mutevani
 
 AI assistance is allowed. **Claude** and **Codex** are recommended.
 
