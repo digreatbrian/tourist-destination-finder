@@ -94,8 +94,8 @@ Run the application with:
 python main.py
 ```
 
-The application stores destinations and saved places in a local SQLite database
-at `~/.tourist_destination_finder/destinations.db`. Set the
+The application uses SQLAlchemy with a local SQLite database stored at
+`~/.tourist_destination_finder/destinations.db`. Set the
 `TOURIST_DESTINATION_DATABASE` environment variable to use a different database
 path, such as a temporary database during tests.
 
