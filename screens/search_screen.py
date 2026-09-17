@@ -3,6 +3,7 @@ Search screen UI with iOS-inspired styling and reusable widgets.
 """
 
 from kivy.uix.scrollview import ScrollView
+from kivy.metrics import dp
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.card import MDCard
 from kivymd.uix.label import MDLabel
@@ -14,7 +15,16 @@ from widgets.destination_card import DestinationCard
 from widgets.ios_bottom_navigation import IOSBottomNavigation
 
 
-SEARCH_FILTER_CHIPS = ("Popular", "Beach", "City", "Nature")
+SEARCH_FILTER_CHIPS = (
+    "Popular",
+    "Beach",
+    "City Breaks",
+    "Nature",
+    "Luxury",
+    "Family",
+    "Adventure",
+    "Culture",
+)
 
 
 class SearchScreen(MDScreen):
@@ -134,7 +144,7 @@ class SearchScreen(MDScreen):
         )
         header_layout.add_widget(
             MDLabel(
-                text="Search-inspired layout focused on polished, iOS-like visuals.",
+                text="Discover places curated for your next unforgettable trip.",
                 font_style="Body2",
                 theme_text_color="Custom",
                 text_color=AppTheme.TEXT_SECONDARY_COLOR,
@@ -185,9 +195,12 @@ class SearchScreen(MDScreen):
         )
         chip_layout = MDBoxLayout(
             orientation="horizontal",
-            adaptive_width=True,
+            size_hint_x=None,
+            adaptive_height=True,
             spacing=AppTheme.CARD_SPACING,
+            padding=(0, 0, AppTheme.CARD_SPACING, 0),
         )
+        chip_layout.bind(minimum_width=chip_layout.setter("width"))
 
         # Add visual chips representing category filters
         for filter_name in SEARCH_FILTER_CHIPS:
@@ -209,7 +222,7 @@ class SearchScreen(MDScreen):
         chip_card = MDCard(
             size_hint=(None, None),
             height=AppTheme.CHIP_HEIGHT,
-            width=max(AppTheme.CHIP_HEIGHT * 2, len(filter_name) * 10),
+            width=max(dp(108), len(filter_name) * dp(7.5)),
             radius=[AppTheme.CHIP_RADIUS] * 4,
             md_bg_color=AppTheme.ACCENT_MUTED_COLOR,
             elevation=0,
@@ -269,5 +282,6 @@ class SearchScreen(MDScreen):
             title=destination.name,
             subtitle=subtitle,
             description=description,
+            image_url=destination.image_url,
             action_text="View",
         )
