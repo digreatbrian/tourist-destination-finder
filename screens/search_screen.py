@@ -263,7 +263,7 @@ class SearchScreen(MDScreen):
         Returns:
             Configured destination card widget.
         """
-        subtitle = f"{destination.location} • {destination.category}"
+        subtitle = f"{destination.location} - {destination.category}"
         description = destination.description or "Curated destination idea ready to explore."
         return DestinationCard(
             title=destination.name,

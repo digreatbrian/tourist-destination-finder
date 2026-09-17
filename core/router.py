@@ -18,12 +18,12 @@ from widgets.ios_bottom_navigation import IOSBottomNavigation
 HOME_FEATURED_DESTINATIONS = (
     {
         "title": "Santorini Escape",
-        "subtitle": "Greece • Coastal",
+        "subtitle": "Greece - Coastal",
         "description": "Whitewashed villages, blue domes, and sunset views over the caldera.",
     },
     {
         "title": "Kyoto Gardens",
-        "subtitle": "Japan • Culture",
+        "subtitle": "Japan - Culture",
         "description": "Temples, tea houses, and peaceful gardens with seasonal colors.",
     },
 )
@@ -166,6 +166,12 @@ class AppRouter:
     """
 
     def __init__(self, container) -> None:
+        """
+        Initializes the router with app dependencies.
+
+        Args:
+            container: Dependency container for service access.
+        """
         self.container = container
 
     def build_root(self) -> MDScreenManager:

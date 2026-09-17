@@ -172,7 +172,7 @@ class SavedScreen(MDScreen):
         Returns:
             Configured destination card for saved list display.
         """
-        subtitle = f"{destination.location} • {destination.category}"
+        subtitle = f"{destination.location} - {destination.category}"
         description = destination.description or "Saved destination ready for trip planning."
         return DestinationCard(
             title=destination.name,
