@@ -126,7 +126,7 @@ class SavedScreen(MDScreen):
         )
         header_layout.add_widget(
             MDLabel(
-                text="Your personal collection of places to revisit.",
+                text="Your handpicked destinations in one beautiful collection.",
                 font_style="Body2",
                 theme_text_color="Custom",
                 text_color=AppTheme.TEXT_SECONDARY_COLOR,
@@ -178,5 +178,6 @@ class SavedScreen(MDScreen):
             title=destination.name,
             subtitle=subtitle,
             description=description,
+            image_url=destination.image_url,
             action_text="Saved",
         )
