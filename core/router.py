@@ -8,6 +8,7 @@ from kivymd.uix.label import MDLabel
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.screenmanager import MDScreenManager
 
+from screens.destination_detail_screen import DestinationDetailScreen
 from screens.saved_screen import SavedScreen
 from screens.search_screen import SearchScreen
 from theme import AppTheme
