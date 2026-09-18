@@ -9,7 +9,6 @@ from kivymd.uix.screen import MDScreen
 
 from models.destination import Destination
 from theme import AppTheme
-from widgets.app_top_bar import AppTopBar
 from widgets.destination_card import DestinationCard
 from widgets.ios_bottom_navigation import IOSBottomNavigation
 
@@ -50,26 +49,6 @@ class SavedScreen(MDScreen):
             screen_name: Registered screen name to display.
         """
         self.manager.current = screen_name
-
-    def view_destination(self, destination: Destination) -> None:
-        """
-        Displays full details for the selected saved destination.
-
-        Args:
-            destination: Destination selected from the saved list.
-        """
-        detail_screen = self.manager.get_screen("destination_detail")
-        detail_screen.display_destination(
-            destination={
-                "title": destination.name,
-                "subtitle": f"{destination.location} - {destination.category}",
-                "description": destination.description
-                or "Saved destination ready for trip planning.",
-                "image_url": destination.image_url,
-            },
-            return_screen_name="saved",
-        )
-        self.manager.current = "destination_detail"
 
     def populate_saved_cards(self) -> None:
         """
@@ -113,9 +92,6 @@ class SavedScreen(MDScreen):
             spacing=AppTheme.SECTION_SPACING,
         )
         self.md_bg_color = AppTheme.SCREEN_BACKGROUND_COLOR
-
-        # Add the top navigation bar
-        root_layout.add_widget(AppTopBar(title="Saved"))
 
         # Add title and subtitle content
         root_layout.add_widget(self._build_header())
@@ -204,5 +180,4 @@ class SavedScreen(MDScreen):
             description=description,
             image_url=destination.image_url,
             action_text="Saved",
-            on_view=lambda destination=destination: self.view_destination(destination),
         )

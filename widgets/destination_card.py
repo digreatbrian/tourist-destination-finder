@@ -3,16 +3,17 @@ Reusable destination preview card widget.
 """
 
 import hashlib
-from collections.abc import Callable
 
+from kivy.graphics import Color, RoundedRectangle
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.image import AsyncImage
+from kivy.uix.widget import Widget
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.button import MDIconButton, MDRaisedButton
+from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.card import MDCard
 from kivymd.uix.label import MDLabel
 
 from theme import AppTheme
-from widgets.skeleton_image import SkeletonImage
 
 
 FALLBACK_CARD_IMAGES = (
@@ -23,29 +24,9 @@ FALLBACK_CARD_IMAGES = (
 )
 
 
-def resolve_destination_image_url(seed: str, image_url: str) -> str:
-    """
-    Resolves the image URL used for a destination visual.
-
-    Args:
-        seed: Stable text (e.g. destination title) used to deterministically
-            pick a fallback image when no explicit URL is provided.
-        image_url: Explicit destination image URL when available.
-
-    Returns:
-        An image URL ready for rendering.
-    """
-    if image_url.strip():
-        return image_url
-
-    # Pick a deterministic fallback image based on the seed text
-    seed_hash = hashlib.sha256(seed.encode("utf-8")).hexdigest()
-    return FALLBACK_CARD_IMAGES[int(seed_hash, 16) % len(FALLBACK_CARD_IMAGES)]
-
-
 class DestinationCard(MDCard):
     """
-    Displays destination summary details using a modern image-first layout.
+    Displays destination summary details using an iOS-inspired card layout.
     """
 
     def __init__(
@@ -55,7 +36,6 @@ class DestinationCard(MDCard):
         description: str,
         image_url: str = "",
         action_text: str = "View",
-        on_view: Callable[[], None] | None = None,
         **kwargs,
     ) -> None:
         """
@@ -67,7 +47,6 @@ class DestinationCard(MDCard):
             description: Short destination overview.
             image_url: Hero image URL for the destination card.
             action_text: Label shown on the action button.
-            on_view: Callback invoked when the action button is pressed.
         """
         super().__init__(**kwargs)
 
@@ -80,26 +59,26 @@ class DestinationCard(MDCard):
         self.radius = [AppTheme.CARD_CORNER_RADIUS] * 4
         self.md_bg_color = AppTheme.SURFACE_COLOR
         self.line_color = AppTheme.SURFACE_BORDER_COLOR
-        self.elevation = 3
+        self.elevation = 2
 
-        # Build the image-on-top layout, followed by text and widgets
-        self.add_widget(self._build_hero_image(title, image_url))
+        # Build image-first modern card layout
+        self.add_widget(self._build_hero_image(title, subtitle, image_url))
         self.add_widget(
             self._build_content_section(
                 title=title,
                 subtitle=subtitle,
                 description=description,
                 action_text=action_text,
-                on_view=on_view,
             )
         )
 
-    def _build_hero_image(self, title: str, image_url: str) -> FloatLayout:
+    def _build_hero_image(self, title: str, subtitle: str, image_url: str) -> FloatLayout:
         """
-        Builds the top hero image with a skeleton loading state.
+        Builds the image header with modern text overlay.
 
         Args:
-            title: Destination name used for deterministic fallback selection.
+            title: Destination name.
+            subtitle: Destination metadata.
             image_url: Explicit destination image URL.
 
         Returns:
@@ -107,13 +86,59 @@ class DestinationCard(MDCard):
         """
         image_header = FloatLayout(size_hint_y=None, height=AppTheme.CARD_IMAGE_HEIGHT)
         image_header.add_widget(
-            SkeletonImage(
-                source=resolve_destination_image_url(title, image_url),
-                radius=[AppTheme.CARD_CORNER_RADIUS, AppTheme.CARD_CORNER_RADIUS, 0, 0],
-                size_hint=(1, 1),
+            AsyncImage(
+                source=self._resolve_image_url(title, image_url),
+                allow_stretch=True,
+                keep_ratio=False,
+            )
+        )
+        image_header.add_widget(self._build_image_overlay())
+        image_header.add_widget(
+            MDLabel(
+                text=subtitle.upper(),
+                font_style="Caption",
+                theme_text_color="Custom",
+                text_color=(1, 1, 1, 0.95),
+                size_hint=(1, None),
+                adaptive_height=True,
+                halign="left",
+                pos_hint={"x": 0.07, "y": 0.68},
+                bold=True,
+            )
+        )
+        image_header.add_widget(
+            MDLabel(
+                text=title,
+                font_style="H6",
+                theme_text_color="Custom",
+                text_color=(1, 1, 1, 1),
+                size_hint=(0.86, None),
+                adaptive_height=True,
+                halign="left",
+                pos_hint={"x": 0.07, "y": 0.16},
+                bold=True,
             )
         )
         return image_header
+
+    def _build_image_overlay(self) -> Widget:
+        """
+        Builds a dark overlay for better image text contrast.
+
+        Returns:
+            Configured overlay widget.
+        """
+        overlay = Widget()
+        with overlay.canvas:
+            Color(*AppTheme.CARD_OVERLAY_COLOR)
+            overlay_rectangle = RoundedRectangle(radius=[0, 0, 0, 0])
+
+        def update_overlay(*_) -> None:
+            overlay_rectangle.pos = overlay.pos
+            overlay_rectangle.size = overlay.size
+
+        overlay.bind(pos=update_overlay, size=update_overlay)
+        return overlay
 
     def _build_content_section(
         self,
@@ -121,17 +146,15 @@ class DestinationCard(MDCard):
         subtitle: str,
         description: str,
         action_text: str,
-        on_view: Callable[[], None] | None,
     ) -> MDBoxLayout:
         """
-        Builds the lower information and action section shown below the image.
+        Builds the lower information and action section.
 
         Args:
             title: Destination title.
             subtitle: Destination subtitle.
             description: Destination summary.
             action_text: Action label text.
-            on_view: Callback invoked when the action button is pressed.
 
         Returns:
             Configured content section layout.
@@ -142,24 +165,7 @@ class DestinationCard(MDCard):
             padding=AppTheme.CARD_PADDING,
             spacing=AppTheme.CARD_SPACING,
         )
-        content.add_widget(self._build_title_row(title))
-        content.add_widget(self._build_subtitle_label(subtitle))
-        content.add_widget(self._build_description_label(description))
-        content.add_widget(self._build_action_row(action_text, on_view))
-        return content
-
-    def _build_title_row(self, title: str) -> MDBoxLayout:
-        """
-        Builds the title row with a bookmark icon accent.
-
-        Args:
-            title: Destination title text.
-
-        Returns:
-            Configured title row layout.
-        """
-        title_row = MDBoxLayout(orientation="horizontal", adaptive_height=True)
-        title_row.add_widget(
+        content.add_widget(
             MDLabel(
                 text=title,
                 font_style="H6",
@@ -169,16 +175,10 @@ class DestinationCard(MDCard):
                 bold=True,
             )
         )
-        title_row.add_widget(
-            MDIconButton(
-                icon="bookmark-outline",
-                theme_text_color="Custom",
-                text_color=AppTheme.TEXT_TERTIARY_COLOR,
-                size_hint=(None, None),
-                size=(AppTheme.CHIP_HEIGHT, AppTheme.CHIP_HEIGHT),
-            )
-        )
-        return title_row
+        content.add_widget(self._build_subtitle_label(subtitle))
+        content.add_widget(self._build_description_label(description))
+        content.add_widget(self._build_action_row(action_text))
+        return content
 
     def _build_subtitle_label(self, subtitle: str) -> MDLabel:
         """
@@ -194,9 +194,8 @@ class DestinationCard(MDCard):
             text=subtitle,
             font_style="Caption",
             theme_text_color="Custom",
-            text_color=AppTheme.ACCENT_COLOR,
+            text_color=AppTheme.TEXT_TERTIARY_COLOR,
             adaptive_height=True,
-            bold=True,
         )
 
     def _build_description_label(self, description: str) -> MDLabel:
@@ -220,17 +219,12 @@ class DestinationCard(MDCard):
             max_lines=2,
         )
 
-    def _build_action_row(
-        self,
-        action_text: str,
-        on_view: Callable[[], None] | None,
-    ) -> MDBoxLayout:
+    def _build_action_row(self, action_text: str) -> MDBoxLayout:
         """
         Builds the action row shown at the bottom of the card.
 
         Args:
             action_text: Label shown on the action button.
-            on_view: Callback invoked when the action button is pressed.
 
         Returns:
             Configured action row with a right-aligned button.
@@ -244,17 +238,33 @@ class DestinationCard(MDCard):
         # Push the button to the right side
         action_row.add_widget(MDBoxLayout())
 
-        # Add an accent action button wired to the view callback
-        action_button = MDRaisedButton(
-            text=action_text,
-            md_bg_color=AppTheme.ACCENT_COLOR,
-            theme_text_color="Custom",
-            text_color=(1, 1, 1, 1),
-            elevation=0,
-            radius=[AppTheme.CHIP_RADIUS] * 4,
+        # Add an accent action button
+        action_row.add_widget(
+            MDRaisedButton(
+                text=action_text,
+                md_bg_color=AppTheme.ACCENT_COLOR,
+                theme_text_color="Custom",
+                text_color=(1, 1, 1, 1),
+                elevation=0,
+            )
         )
-        if on_view is not None:
-            action_button.bind(on_release=lambda *_: on_view())
-        action_row.add_widget(action_button)
 
         return action_row
+
+    def _resolve_image_url(self, title: str, image_url: str) -> str:
+        """
+        Resolves the image URL shown in the card header.
+
+        Args:
+            title: Destination name used for deterministic fallback selection.
+            image_url: Explicit destination image URL when available.
+
+        Returns:
+            An image URL for rendering.
+        """
+        if image_url.strip():
+            return image_url
+
+        title_hash = hashlib.sha256(title.encode("utf-8")).hexdigest()
+        image_index = int(title_hash, 16) % len(FALLBACK_CARD_IMAGES)
+        return FALLBACK_CARD_IMAGES[image_index]

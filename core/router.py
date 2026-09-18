@@ -12,8 +12,7 @@ from screens.destination_detail_screen import DestinationDetailScreen
 from screens.saved_screen import SavedScreen
 from screens.search_screen import SearchScreen
 from theme import AppTheme
-from widgets.app_top_bar import AppTopBar
-from widgets.destination_card import DestinationCard, resolve_destination_image_url
+from widgets.destination_card import DestinationCard
 from widgets.ios_bottom_navigation import IOSBottomNavigation
 
 
@@ -55,27 +54,6 @@ class HomeScreen(MDScreen):
         """
         self.manager.current = screen_name
 
-    def view_destination(self, destination: dict) -> None:
-        """
-        Displays full details for a featured destination.
-
-        Args:
-            destination: Prepared featured destination fields.
-        """
-        detail_screen = self.manager.get_screen("destination_detail")
-        detail_screen.display_destination(
-            destination={
-                "title": destination["title"],
-                "subtitle": destination["subtitle"],
-                "description": destination["description"],
-                "image_url": resolve_destination_image_url(
-                    destination["title"], destination.get("image_url", "")
-                ),
-            },
-            return_screen_name="home",
-        )
-        self.manager.current = "destination_detail"
-
     def _build_root_layout(self) -> MDBoxLayout:
         """
         Builds the root layout for the home screen.
@@ -94,9 +72,6 @@ class HomeScreen(MDScreen):
             spacing=AppTheme.SECTION_SPACING,
         )
         self.md_bg_color = AppTheme.SCREEN_BACKGROUND_COLOR
-
-        # Add the top navigation bar
-        root_layout.add_widget(AppTopBar(title="Wanderly"))
 
         # Add title and subtitle text
         root_layout.add_widget(self._build_header())
@@ -179,7 +154,6 @@ class HomeScreen(MDScreen):
                     subtitle=destination["subtitle"],
                     description=destination["description"],
                     action_text="Explore",
-                    on_view=lambda destination=destination: self.view_destination(destination),
                 )
             )
 
@@ -214,7 +188,6 @@ class AppRouter:
         manager.add_widget(HomeScreen())
         manager.add_widget(SearchScreen(destination_service=self.container.destination_service))
         manager.add_widget(SavedScreen(destination_service=self.container.destination_service))
-        manager.add_widget(DestinationDetailScreen())
 
         # Return the manager
         return manager

@@ -54,18 +54,3 @@ class AppTheme:
     # Widget size tokens
     CHIP_HEIGHT = dp(36)
     CHIP_RADIUS = dp(14)
-
-    # Top bar tokens
-    TOP_BAR_HEIGHT = dp(48)
-    TOP_BAR_SPACING = dp(10)
-
-    # Skeleton loader tokens
-    SKELETON_BASE_COLOR = (0.89, 0.91, 0.96, 1)
-    SKELETON_PULSE_MIN_ALPHA = 0.55
-    SKELETON_PULSE_DURATION = 0.8
-
-    # Detail screen tokens
-    DETAIL_HERO_HEIGHT = dp(320)
-    DETAIL_FLOATING_BUTTON_SIZE = dp(40)
-    DETAIL_ACTION_BAR_HEIGHT = dp(52)
-    DETAIL_CONTENT_SPACING = dp(10)

@@ -11,7 +11,6 @@ from kivymd.uix.screen import MDScreen
 
 from models.destination import Destination
 from theme import AppTheme
-from widgets.app_top_bar import AppTopBar
 from widgets.destination_card import DestinationCard
 from widgets.ios_bottom_navigation import IOSBottomNavigation
 
@@ -65,26 +64,6 @@ class SearchScreen(MDScreen):
         """
         self.manager.current = screen_name
 
-    def view_destination(self, destination: Destination) -> None:
-        """
-        Displays full details for the selected destination.
-
-        Args:
-            destination: Destination selected from the results list.
-        """
-        detail_screen = self.manager.get_screen("destination_detail")
-        detail_screen.display_destination(
-            destination={
-                "title": destination.name,
-                "subtitle": f"{destination.location} - {destination.category}",
-                "description": destination.description
-                or "Curated destination idea ready to explore.",
-                "image_url": destination.image_url,
-            },
-            return_screen_name="search",
-        )
-        self.manager.current = "destination_detail"
-
     def populate_destination_cards(self) -> None:
         """
         Populates the destination card list using service data.
@@ -127,9 +106,6 @@ class SearchScreen(MDScreen):
             spacing=AppTheme.SECTION_SPACING,
         )
         self.md_bg_color = AppTheme.SCREEN_BACKGROUND_COLOR
-
-        # Add the top navigation bar
-        root_layout.add_widget(AppTopBar(title="Explore"))
 
         # Add the screen heading
         root_layout.add_widget(self._build_header())
@@ -308,5 +284,4 @@ class SearchScreen(MDScreen):
             description=description,
             image_url=destination.image_url,
             action_text="View",
-            on_view=lambda destination=destination: self.view_destination(destination),
         )
