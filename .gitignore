@@ -1,5 +1,32 @@
+# Byte-compiled / optimized / DLL files
 __pycache__/
-/dist/
-/build/
-.kivy/
-*.db
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+
+# Static files (generated at build/deploy time)
+assets/*
+staticfiles/
+
+# Django
+web/backend/django/duckapp/db.sqlite3
+*.sqlite3
+
+# Duck Framework runtime files
+.duck/secrets
+.logs/
+.processes.json
+.ipc
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
