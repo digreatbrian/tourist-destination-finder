@@ -5,12 +5,13 @@ via Lively — no client JavaScript involved.
 
 from duck.html.components.container import FlexContainer
 from duck.html.components.icon import Icon
+from duck.html.components.button import Button
 
 from web.services.destinations import Destination, toggle_saved
 from web.ui.components.theme import Theme
 
 
-class SaveToggleButton(FlexContainer):
+class SaveToggleButton(Button):
     """
     Circular badge that toggles whether a destination is saved.
     """

@@ -4,6 +4,7 @@ Horizontal row of category filter chips, updated live via Lively.
 
 from duck.html.components.container import FlexContainer
 from duck.html.components.paragraph import Paragraph
+from duck.html.components.button import Button
 
 from web.services import destinations as destination_service
 from web.ui.components.theme import Theme
@@ -47,7 +48,7 @@ class CategoryChips(FlexContainer):
         """
         is_active = category == self.state["category"]
 
-        chip = Paragraph(text=label, style=self.chip_style(is_active))
+        chip = Button(text=label, style=self.chip_style(is_active))
         chip.bind(
             "click",
             self.build_select_handler(category),

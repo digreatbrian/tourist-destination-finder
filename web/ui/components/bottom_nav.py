@@ -5,6 +5,7 @@ Floating bottom navigation bar.
 from duck.html.components.container import FlexContainer
 from duck.html.components.icon import Icon
 from duck.html.components.paragraph import Paragraph
+from duck.html.components.button import Button
 
 from web.ui.components.theme import Theme
 
@@ -60,7 +61,7 @@ class BottomNav(FlexContainer):
             style={"margin": "0", "font-size": "0.78rem", "font-weight": "600", "color": color},
         )
 
-        item = FlexContainer(
+        item = Button(
             style={
                 "display": "flex",
                 "flex-direction": "column",

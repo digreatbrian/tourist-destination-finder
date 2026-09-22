@@ -1,6 +1,6 @@
 # Tourist Destination Finder
 
-Modular KivyMD starter project for a Tourist Destination Finder mobile app.
+Modular Duck Native starter project for a Tourist Destination Finder mobile app.
 
 ---
 
@@ -91,17 +91,12 @@ If None of this works, ensure you got Python installed.
 Run the application with:
 
 ```bash
-python main.py
+python web/main.py
 ```
-
-The application uses SQLAlchemy with a local SQLite database stored at
-`~/.tourist_destination_finder/destinations.db`. Set the
-`TOURIST_DESTINATION_DATABASE` environment variable to use a different database
-path, such as a temporary database during tests.
 
 ---
 
-## AI Assistance & Sean Mutevani
+## AI Assistance
 
 AI assistance is allowed. **Claude** and **Codex** are recommended.
 
