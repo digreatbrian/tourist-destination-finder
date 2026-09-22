@@ -3,9 +3,8 @@ Reusable card showing a single destination preview.
 """
 
 from duck.html.components.container import Container, FlexContainer
-from duck.html.components.icon import Icon, IconButton
-from duck.html.components.link import Link, LinkButton
-from duck.html.components.button import Clickable
+from duck.html.components.icon import Icon
+from duck.html.components.link import Link
 from duck.html.components.paragraph import Paragraph
 
 from web.services.destinations import Destination
@@ -78,7 +77,7 @@ class DestinationCard(Container):
                 "margin": "0",
             },
         )
-        name_link = LinkButton(
+        name_link = Link(
             url=f"/destination?id={destination.destination_id}",
             text=destination.name,
             style={
