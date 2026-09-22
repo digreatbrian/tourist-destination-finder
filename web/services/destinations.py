@@ -115,6 +115,43 @@ def search_destinations(query: str = "", category: str = "") -> list[Destination
 
     return results
 
+def recommend_destinations(
+    destination_id: int,
+    limit: int = 3,
+) -> list[Destination]:
+    """
+    Returns related destinations, prioritizing the same category.
+
+    Args:
+        destination_id: ID of the destination currently being viewed.
+        limit: Maximum number of recommendations to return.
+
+    Returns:
+        Recommended destinations, excluding the current destination.
+    """
+    destination = get_destination(destination_id)
+
+    # Stop when the destination does not exist or no results are requested
+    if destination is None or limit <= 0:
+        return []
+
+    # Put destinations from the same category first
+    same_category = [
+        item
+        for item in DESTINATIONS
+        if item.destination_id != destination_id
+        and item.category == destination.category
+    ]
+
+    # Use other destinations to fill any remaining recommendation spaces
+    other_destinations = [
+        item
+        for item in DESTINATIONS
+        if item.destination_id != destination_id
+        and item.category != destination.category
+    ]
+
+    return (same_category + other_destinations)[:limit]
 
 def list_saved_destinations() -> list[Destination]:
     """
