@@ -24,7 +24,11 @@ class SearchExperience(FlexContainer):
         query = self.kwargs.get("query", "")
         category = self.kwargs.get("category", "")
         state = {"query": query, "category": category}
-
+        
+        # Update ID
+        self.id = "search-experience"
+        
+        # Update style
         self.style.update({
             "display": "flex",
             "flex-direction": "column",

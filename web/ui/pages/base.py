@@ -1,19 +1,21 @@
 """
 Base page shared by every page in the app.
 """
-
+from duck.shortcuts import static
 from duck.html.components.container import Container
-from duck.html.components.page import Page
 from duck.html.components.style import Style
+
+from duck.native.components.page import AppPage
 
 from web.ui.components.bottom_nav import BottomNav
 from web.ui.components.theme import Theme
 from web.ui.components.topbar import TopBar
 
+
 SITE_NAME = "Tour Zimbabwe"
 
 
-class BasePage(Page):
+class BasePage(AppPage):
     """
     Shared shell: top bar, centered content column, and floating bottom nav.
     """
@@ -28,17 +30,35 @@ class BasePage(Page):
         self.set_favicon("/static/images/duck-logo.png")
         self.set_accessibility(lang="en")
         self.add_meta(name="theme-color", content=Theme.accent_color)
+        
+        # Add viewport meta
         self.add_meta(
             name="viewport",
-            content="width=device-width, initial-scale=1, viewport-fit=cover",
+            content=(
+                "width=device-width, "
+                "initial-scale=1, "
+                "viewport-fit=cover"
+            ),
         )
-        self.add_to_head(self.build_global_style())
-
+        
+        # Add global styles
+        self.add_global_styles()
+        
         # Shared layout: top bar, page-specific body, floating nav
-        self.add_to_body(TopBar())
-        self.add_to_body(self.build_content_column())
-        self.add_to_body(BottomNav(active=self.request.path))
+        self.add_to_body([
+            TopBar(),
+            self.build_content_column(),
+            BottomNav(active=self.request.path),
+        ])
 
+    def add_global_styles(self):
+      """
+      Adds global style/stylesheets.
+      """
+      self.add_stylesheet(href=static("css/bootstrap.min.css"))
+      self.add_stylesheet(href=static("css/bootstrap-icons.min.css"))
+      self.add_to_head(self.build_global_style())
+      
     def build_page_children(self) -> list:
         """
         Override in subclasses to return the page-specific body components.

@@ -46,8 +46,9 @@ class DestinationCard(Container):
             klass=f"bi {destination.icon}",
             style={"font-size": "2.75rem", "color": "#fff"},
         )
+        
         save_button = SaveToggleButton(destination=destination)
-
+        
         return FlexContainer(
             style={
                 "display": "flex",
@@ -87,11 +88,9 @@ class DestinationCard(Container):
                 "font-weight": "700",
                 "color": Theme.text_primary_color,
                 "text-decoration": "none",
+                "background": Theme.accent_muted_color,
             },
-            html_minify=False,
         )
-        
-        print(name_link.render())
         
         location = IconText(
             icon_class="bi-geo-alt-fill",

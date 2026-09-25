@@ -32,5 +32,5 @@ class IconText(FlexContainer):
 
         icon = Icon(klass=f"bi {icon_class}", style={"font-size": "0.9rem", **icon_style})
         label = Paragraph(text=text, style={"margin": "0", **text_style})
-
+        
         self.add_children([icon, label])

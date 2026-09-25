@@ -29,6 +29,19 @@ SECRET_KEY: str = os.environ.get("DUCK_SECRET_KEY", DUCK_SECRET)
 DEBUG: bool = True
 
 
+# Native
+# Whether to enable Duck Native support.
+NATIVE_ENABLED: bool = True
+
+
+# Native Config
+NATIVE_CONFIG: str = BASE_DIR / "native/config.py"
+
+
+# Lively Debug
+LIVELY_DEBUG: bool = True
+
+
 # Allowed Hosts, Wildcards Allowed
 ALLOWED_HOSTS: list[str] = ["*"]
 

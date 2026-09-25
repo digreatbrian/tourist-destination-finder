@@ -5,7 +5,7 @@ Detail page for a single destination.
 from duck.html.components.container import FlexContainer
 from duck.html.components.heading import Heading
 from duck.html.components.icon import Icon
-from duck.html.components.link import Link
+from duck.html.components.link import LinkButton
 from duck.html.components.paragraph import Paragraph
 
 from web.services import destinations as destination_service
@@ -38,13 +38,14 @@ class DestinationDetailPage(BasePage):
 
         return [self.build_back_link(), self.build_hero(), self.build_body()]
 
-    def build_back_link(self) -> Link:
+    def build_back_link(self) -> LinkButton:
         """
         Builds the back-to-home link at the top of the page.
         """
-        return Link(
+        return LinkButton(
             url="/",
             text="Back",
+            bg_color=Theme.accent_muted_color,
             style={
                 "display": "inline-flex",
                 "align-items": "center",

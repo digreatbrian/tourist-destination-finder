@@ -54,6 +54,8 @@ class Theme:
     nav_bar_height = "80px"
     nav_bar_radius = "28px"
     nav_bar_margin = "10px"
+    nav_bar_gap = "8px"
+    nav_bar_padding = "10px"
 
     # Chip tokens
     chip_height = "42px"

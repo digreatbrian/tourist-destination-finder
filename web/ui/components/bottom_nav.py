@@ -1,6 +1,8 @@
 """
 Floating bottom navigation bar.
 """
+from duck.utils.urlcrack import URL
+from duck.shortcuts import resolve, static
 
 from duck.html.components.container import FlexContainer
 from duck.html.components.icon import Icon
@@ -17,9 +19,9 @@ class BottomNav(FlexContainer):
 
     # (url, icon when active, icon when inactive, label)
     NAV_ITEMS = [
-        ("/", "bi-house-fill", "bi-house", "Home"),
-        ("/search", "bi-search", "bi-search", "Search"),
-        ("/saved", "bi-heart-fill", "bi-heart", "Saved"),
+        ("home", "bi-house-fill", "bi-house", "Home"),
+        ("search", "bi-search", "bi-search", "Search"),
+        ("saved", "bi-heart-fill", "bi-heart", "Saved"),
     ]
 
     def on_create(self):
@@ -28,6 +30,8 @@ class BottomNav(FlexContainer):
         self.style.update({
             "display": "flex",
             "position": "fixed",
+            "padding": Theme.nav_bar_padding,
+            "gap": Theme.nav_bar_gap,
             "left": Theme.screen_padding_x,
             "right": Theme.screen_padding_x,
             "bottom": Theme.nav_bar_margin,
@@ -42,10 +46,11 @@ class BottomNav(FlexContainer):
             "box-shadow": "0 12px 30px rgba(18, 26, 51, 0.12)",
         })
 
-        active_path = self.kwargs.get("active", "/")
-
-        for url, active_icon, inactive_icon, label in self.NAV_ITEMS:
-            is_active = url == active_path
+        active_path = URL(self.kwargs.get("active", resolve("home"))).path
+        
+        for url_name, active_icon, inactive_icon, label in self.NAV_ITEMS:
+            url = resolve(url_name)
+            is_active = URL(url).path == active_path
             icon_class = active_icon if is_active else inactive_icon
             self.add_child(self.build_nav_item(url, icon_class, label, is_active))
 
@@ -55,7 +60,7 @@ class BottomNav(FlexContainer):
         """
         color = Theme.accent_color if is_active else Theme.text_tertiary_color
 
-        icon = Icon(klass=f"bi {icon_class}", style={"font-size": "1.4rem", "color": color})
+        icon = Icon(klass=f"bi {icon_class}", style={"font-size": "1.2rem", "color": color})
         text = Paragraph(
             text=label,
             style={"margin": "0", "font-size": "0.78rem", "font-weight": "600", "color": color},
@@ -81,5 +86,4 @@ class BottomNav(FlexContainer):
         """
         async def on_click(component, event, value, ws):
             await ws.execute_js(f"window.open('{url}')")
-
         return on_click

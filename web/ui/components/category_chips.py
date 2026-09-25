@@ -23,13 +23,16 @@ class CategoryChips(FlexContainer):
         self.grid = self.get_kwarg_or_raise("grid")
         
         self.style.update({
-            "display": "flex",
-            "gap": "10px",
-            "overflow-x": "auto",
-            "max-width": Theme.max_content_width,
-            "padding": f"{Theme.section_spacing} 0",
-        })
-
+          "display": "flex",
+          "flex-wrap": "nowrap",
+          "gap": "10px",
+          "overflow-x": "auto",
+          "width": "100%",
+          "max-width": "100%",
+          "box-sizing": "border-box",
+          "padding": f"{Theme.section_spacing} 0",
+      })
+      
         self.rebuild_chips()
 
     def rebuild_chips(self):
