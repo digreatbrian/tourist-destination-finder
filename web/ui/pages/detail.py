@@ -2,12 +2,14 @@
 Detail page for a single destination.
 """
 
+from duck.shortcuts import resolve
 from duck.html.components.container import FlexContainer
 from duck.html.components.heading import Heading
 from duck.html.components.icon import Icon
 from duck.html.components.link import LinkButton
 from duck.html.components.paragraph import Paragraph
 
+from web.meta import APP_NAME, BACK_LABEL, NOT_FOUND_MESSAGE
 from web.services import destinations as destination_service
 from web.ui.components.icon_text import IconText
 from web.ui.components.save_toggle_button import SaveToggleButton
@@ -20,7 +22,7 @@ class DestinationDetailPage(BasePage):
     Shows full details for one destination, resolved from `?id=`.
     """
 
-    page_title = "Tour Zimbabwe"
+    page_title = APP_NAME
 
     def on_create(self):
         # Resolve the destination before the base page builds the layout
@@ -28,13 +30,13 @@ class DestinationDetailPage(BasePage):
         self.destination = destination_service.get_destination(destination_id)
 
         if self.destination:
-            self.page_title = f"{self.destination.name} — Tour Zimbabwe"
+            self.page_title = f"{self.destination.name} — {APP_NAME}"
 
         super().on_create()
 
     def build_page_children(self) -> list:
         if self.destination is None:
-            return [Paragraph(text="Destination not found.")]
+            return [Paragraph(text=NOT_FOUND_MESSAGE)]
 
         return [self.build_back_link(), self.build_hero(), self.build_body()]
 
@@ -43,8 +45,8 @@ class DestinationDetailPage(BasePage):
         Builds the back-to-home link at the top of the page.
         """
         return LinkButton(
-            url="/",
-            text="Back",
+            url=resolve("home"),
+            text=BACK_LABEL,
             bg_color=Theme.accent_muted_color,
             style={
                 "display": "inline-flex",

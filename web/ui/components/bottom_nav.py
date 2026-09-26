@@ -9,6 +9,7 @@ from duck.html.components.icon import Icon
 from duck.html.components.paragraph import Paragraph
 from duck.html.components.button import Button
 
+from web.meta import NAV_ITEMS
 from web.ui.components.theme import Theme
 
 
@@ -16,13 +17,6 @@ class BottomNav(FlexContainer):
     """
     Fixed, floating navigation bar with Home, Search, and Saved tabs.
     """
-
-    # (url, icon when active, icon when inactive, label)
-    NAV_ITEMS = [
-        ("home", "bi-house-fill", "bi-house", "Home"),
-        ("search", "bi-search", "bi-search", "Search"),
-        ("saved", "bi-heart-fill", "bi-heart", "Saved"),
-    ]
 
     def on_create(self):
         super().on_create()
@@ -36,7 +30,7 @@ class BottomNav(FlexContainer):
             "right": Theme.screen_padding_x,
             "bottom": Theme.nav_bar_margin,
             "height": Theme.nav_bar_height,
-            "max-width": "720px",
+            "max-width": Theme.max_content_width,
             "margin": "0 auto",
             "justify-content": "space-around",
             "align-items": "center",
@@ -48,7 +42,7 @@ class BottomNav(FlexContainer):
 
         active_path = URL(self.kwargs.get("active", resolve("home"))).path
         
-        for url_name, active_icon, inactive_icon, label in self.NAV_ITEMS:
+        for url_name, active_icon, inactive_icon, label in NAV_ITEMS:
             url = resolve(url_name)
             is_active = URL(url).path == active_path
             icon_class = active_icon if is_active else inactive_icon

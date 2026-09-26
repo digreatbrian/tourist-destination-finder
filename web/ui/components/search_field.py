@@ -7,21 +7,25 @@ from duck.html.components.container import FlexContainer
 from duck.html.components.icon import Icon
 from duck.html.components.input import Input
 
-from web.services import destinations as destination_service
+from web.meta import SEARCH_PLACEHOLDER
 from web.ui.components.theme import Theme
 
 
 class SearchField(FlexContainer):
     """
-    Pill-shaped search box that live-filters a target grid as the
-    visitor types, using the search state shared with `CategoryChips`.
+    Pill-shaped search box that live-filters the destinations grid.
+
+    Clearing the text also resets the category chips to "All", so an
+    empty query always shows the full default catalog.
     """
 
     def on_create(self):
         super().on_create()
 
-        self.state = self.get_kwarg_or_raise("state")
         self.grid = self.get_kwarg_or_raise("grid")
+        self.chips = self.get_kwarg_or_raise("chips")
+        self.on_change = self.get_kwarg_or_raise("on_change")
+        query = self.kwargs.get("query", "")
 
         self.style.update({
             "display": "flex",
@@ -43,8 +47,8 @@ class SearchField(FlexContainer):
         search_input = Input(
             type="search",
             name="q",
-            placeholder="Search destinations or cities",
-            props={"value": self.state["query"]},
+            placeholder=SEARCH_PLACEHOLDER,
+            props={"value": query},
             style={
                 "flex": "1",
                 "width": "100%",
@@ -54,17 +58,22 @@ class SearchField(FlexContainer):
                 "font-size": "1rem",
             },
         )
-        search_input.bind("input", self.on_query_input, update_targets=[self.grid])
+        search_input.bind(
+            "input",
+            self.on_input,
+            update_targets=[self.grid, self.chips],
+        )
 
         self.add_children([icon, search_input])
 
-    async def on_query_input(self, component, event, value, ws):
+    async def on_input(self, component, event, value, ws):
         """
-        Updates the shared query state and refreshes the results grid.
+        Reports the new query to the parent, which refreshes the grid.
+
+        An empty value also resets the category chips, so clearing the
+        box always restores the full default catalog.
         """
-        self.state["query"] = value
-        self.grid.set_destinations(
-            destination_service.search_destinations(
-                self.state["query"], self.state["category"]
-            )
-        )
+        self.on_change(value)
+
+        if not value:
+            self.chips.set_active_category("")
