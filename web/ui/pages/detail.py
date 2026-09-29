@@ -6,7 +6,8 @@ from duck.shortcuts import resolve
 from duck.html.components.container import FlexContainer
 from duck.html.components.heading import Heading
 from duck.html.components.icon import Icon
-from duck.html.components.link import LinkButton
+from duck.html.components.image import Image
+from duck.html.components.link import Link
 from duck.html.components.paragraph import Paragraph
 
 from web.meta import APP_NAME, BACK_LABEL, NOT_FOUND_MESSAGE
@@ -40,19 +41,21 @@ class DestinationDetailPage(BasePage):
 
         return [self.build_back_link(), self.build_hero(), self.build_body()]
 
-    def build_back_link(self) -> LinkButton:
+    def build_back_link(self) -> Link:
         """
         Builds the back-to-home link at the top of the page.
         """
-        return LinkButton(
+        return Link(
             url=resolve("home"),
             text=BACK_LABEL,
-            bg_color=Theme.accent_muted_color,
             style={
                 "display": "inline-flex",
                 "align-items": "center",
                 "gap": "6px",
                 "margin": "18px 0 0",
+                "padding": "8px 12px",
+                "border-radius": "999px",
+                "background": Theme.accent_muted_color,
                 "color": Theme.text_secondary_color,
                 "font-weight": "600",
                 "text-decoration": "none",
@@ -61,13 +64,51 @@ class DestinationDetailPage(BasePage):
 
     def build_hero(self) -> FlexContainer:
         """
-        Builds the icon banner and save toggle for the destination.
+        Builds the destination photo, image credit, and save toggle.
         """
-        icon = Icon(
-            klass=f"bi {self.destination.icon}",
-            style={"font-size": "4.5rem", "color": "#fff"},
+        image = Image(
+            source=self.destination.image_url,
+            alt=self.destination.name,
+            style={
+                "position": "absolute",
+                "inset": "0",
+                "width": "100%",
+                "height": "100%",
+                "object-fit": "cover",
+                "border-radius": Theme.card_radius,
+            },
         )
         save_button = SaveToggleButton(destination=self.destination)
+        save_button.style["z-index"] = "1"
+        children = [image]
+
+        if self.destination.image_credit and self.destination.image_source_url:
+            children.append(Link(
+                url=self.destination.image_source_url,
+                text=self.destination.image_credit,
+                style={
+                    "position": "absolute",
+                    "left": "12px",
+                    "bottom": "12px",
+                    "z-index": "1",
+                    "padding": "5px 9px",
+                    "border-radius": "4px",
+                    "background": "rgba(0, 0, 0, 0.6)",
+                    "color": "#fff",
+                    "font-size": "0.75rem",
+                },
+            ))
+        else:
+            children.append(Icon(
+                klass=f"bi {self.destination.icon}",
+                style={
+                    "position": "absolute",
+                    "font-size": "4.5rem",
+                    "color": "#fff",
+                },
+            ))
+
+        children.append(save_button)
 
         return FlexContainer(
             style={
@@ -75,12 +116,13 @@ class DestinationDetailPage(BasePage):
                 "position": "relative",
                 "height": "230px",
                 "border-radius": Theme.card_radius,
+                "overflow": "hidden",
                 "align-items": "center",
                 "justify-content": "center",
-                "background": f"linear-gradient(135deg, {self.destination.accent}, {Theme.surface_elevated_color})",
+                "background": self.destination.accent,
                 "margin": "16px 0",
             },
-            children=[icon, save_button],
+            children=children,
         )
 
     def build_body(self) -> FlexContainer:

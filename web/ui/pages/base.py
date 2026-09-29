@@ -23,7 +23,20 @@ class BasePage(AppPage):
     page_title = APP_NAME
 
     def on_create(self):
-        super().on_create()
+        if getattr(self, "_base_page_initialized", False):
+            return
+
+        page_initialized = hasattr(self, "head")
+        if page_initialized:
+            # Page re-creates protected component attributes during setup.
+            self.clear_children()
+            self._component_attr_protection = False
+
+        try:
+            super().on_create()
+        finally:
+            if page_initialized:
+                self._component_attr_protection = True
 
         # SEO and browser chrome defaults
         self.set_title(self.page_title)
@@ -53,6 +66,7 @@ class BasePage(AppPage):
             BottomNav(active=self.request.path),
             snackbar,
         ])
+        self._base_page_initialized = True
 
     def add_global_styles(self):
       """

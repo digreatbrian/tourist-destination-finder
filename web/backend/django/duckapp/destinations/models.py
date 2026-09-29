@@ -20,6 +20,8 @@ class Destination(models.Model):
     category = models.CharField(max_length=100)
     description = models.CharField(max_length=2000, blank=True, default="")
     image_url = models.CharField(max_length=1000, blank=True, default="")
+    image_credit = models.CharField(max_length=500, blank=True, default="")
+    image_source_url = models.URLField(max_length=1000, blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
