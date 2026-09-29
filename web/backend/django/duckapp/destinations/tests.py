@@ -2,17 +2,14 @@
 Tests for destination data, search, and saved-place persistence.
 """
 
-from django.core.management import call_command
 from django.test import TestCase
 
-from web.backend.django.duckapp.destinations.management.commands.seed_destinations import (
-    DESTINATIONS,
-)
 from web.backend.django.duckapp.destinations.models import (
     Destination as DestinationRecord,
     SavedDestination,
 )
 from web.services import destinations as destination_service
+from web.prefill_db import DESTINATIONS, seed_destinations
 
 
 class DestinationServiceTests(TestCase):
@@ -79,16 +76,16 @@ class DestinationServiceTests(TestCase):
         self.assertFalse(SavedDestination.objects.exists())
 
 
-class DestinationSeedCommandTests(TestCase):
+class DestinationSeedTests(TestCase):
     """
     Verifies the starter catalog is complete and safe to seed repeatedly.
     """
 
-    def test_seed_command_is_idempotent_and_populates_licensed_images(self):
-        call_command("seed_destinations")
+    def test_seed_database_is_idempotent_and_populates_licensed_images(self):
+        seed_destinations()
         initial_count = DestinationRecord.objects.count()
 
-        call_command("seed_destinations")
+        seed_destinations()
 
         self.assertGreaterEqual(initial_count, 20)
         self.assertEqual(initial_count, len(DESTINATIONS))

@@ -94,10 +94,11 @@ Run the application with:
 python web/main.py
 ```
 
-On startup, the app prepares its Django SQLite database and seeds the
-Zimbabwe destination catalog. The starter records contain photos hosted by
-Wikimedia Commons; each photo credit links to its file page and license.
-Saved destinations are stored in the same database and are shared by visitors.
+On startup, the app prepares its Django SQLite database and uses
+`web/prefill_db.py` to seed the Zimbabwe destination catalog. The starter
+records contain photos hosted by Wikimedia Commons; each photo credit links to
+its file page and license. Saved destinations are stored in the same database
+and are shared by visitors.
 
 ---
 

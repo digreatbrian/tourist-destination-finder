@@ -6,7 +6,7 @@ from duck.shortcuts import resolve
 from duck.html.components.container import Container, FlexContainer
 from duck.html.components.icon import Icon
 from duck.html.components.image import Image
-from duck.html.components.link import Link
+from duck.html.components.link import Link, LinkButton
 from duck.html.components.paragraph import Paragraph
 
 from web.services.destinations import Destination
@@ -72,8 +72,8 @@ class DestinationCard(Container):
                     "overflow": "hidden",
                     "padding": "4px 8px",
                     "border-radius": "4px",
-                    "background": "rgba(0, 0, 0, 0.6)",
-                    "color": "#fff",
+                    "background": Theme.image_credit_bg_color,
+                    "color": Theme.image_credit_text_color,
                     "font-size": "0.65rem",
                     "text-overflow": "ellipsis",
                     "white-space": "nowrap",
@@ -121,15 +121,17 @@ class DestinationCard(Container):
                 "margin": "0",
             },
         )
-        name_link = Link(
+        name_link = LinkButton(
             url=f"{resolve('destination_detail')}?id={destination.destination_id}",
             text=destination.name,
+            bg_color=Theme.accent_muted_color,
             style={
                 "margin": "8px 0 0",
                 "font-size": "1.15rem",
                 "font-weight": "700",
                 "color": Theme.text_primary_color,
                 "text-decoration": "none",
+                "background": Theme.accent_muted_color,
             },
         )
         

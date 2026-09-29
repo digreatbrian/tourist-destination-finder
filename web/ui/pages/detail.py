@@ -7,7 +7,7 @@ from duck.html.components.container import FlexContainer
 from duck.html.components.heading import Heading
 from duck.html.components.icon import Icon
 from duck.html.components.image import Image
-from duck.html.components.link import Link
+from duck.html.components.link import Link, LinkButton
 from duck.html.components.paragraph import Paragraph
 
 from web.meta import APP_NAME, BACK_LABEL, NOT_FOUND_MESSAGE
@@ -41,13 +41,14 @@ class DestinationDetailPage(BasePage):
 
         return [self.build_back_link(), self.build_hero(), self.build_body()]
 
-    def build_back_link(self) -> Link:
+    def build_back_link(self) -> LinkButton:
         """
         Builds the back-to-home link at the top of the page.
         """
-        return Link(
+        return LinkButton(
             url=resolve("home"),
             text=BACK_LABEL,
+            bg_color=Theme.accent_muted_color,
             style={
                 "display": "inline-flex",
                 "align-items": "center",
@@ -59,6 +60,7 @@ class DestinationDetailPage(BasePage):
                 "color": Theme.text_secondary_color,
                 "font-weight": "600",
                 "text-decoration": "none",
+                "background": Theme.accent_muted_color,
             },
         )
 
@@ -93,8 +95,8 @@ class DestinationDetailPage(BasePage):
                     "z-index": "1",
                     "padding": "5px 9px",
                     "border-radius": "4px",
-                    "background": "rgba(0, 0, 0, 0.6)",
-                    "color": "#fff",
+                    "background": Theme.image_credit_bg_color,
+                    "color": Theme.image_credit_text_color,
                     "font-size": "0.75rem",
                 },
             ))

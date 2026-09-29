@@ -108,14 +108,7 @@ ASYNC_HANDLING: bool = False
 # DJANGO INTEGRATION
 # Whether to use Django for Backend
 # This will make Duck server act as Proxy for Django
-USE_DJANGO: bool = True
-
-
-# Prepare the database and destination catalog before Django starts.
-DJANGO_COMMANDS_ON_STARTUP: list[str] = [
-    "migrate",
-    "seed_destinations",
-]
+USE_DJANGO: bool = False
 
 
 # SSL CERTIFICATE SETTINGS

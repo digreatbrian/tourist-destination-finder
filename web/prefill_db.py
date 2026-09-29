@@ -1,10 +1,16 @@
 """
-Seed a repeatable starter catalog of openly licensed Zimbabwe destination photos.
+Prefills the destination database with the app's starter Zimbabwe catalog.
 """
 
-from django.core.management.base import BaseCommand
+from __future__ import annotations
 
-from web.backend.django.duckapp.destinations.models import Destination
+import os
+import sys
+from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from duck.app import App
 
 
 DESTINATIONS = [
@@ -218,30 +224,50 @@ DESTINATIONS = [
 ]
 
 
-class Command(BaseCommand):
+def seed_destinations() -> None:
     """
-    Inserts or refreshes the starter destination records without duplicating them.
+    Adds the starter destinations without replacing existing database records.
     """
+    from web.backend.django.duckapp.destinations.models import Destination
 
-    help = "Seed the database with Zimbabwe destinations and licensed photo links."
-
-    def handle(self, *args, **options):
-        for destination in DESTINATIONS:
-            name = destination["name"]
-            location = destination["location"]
-            defaults = {
+    # Add only missing records so edits made in the database persist.
+    for destination in DESTINATIONS:
+        Destination.objects.get_or_create(
+            name=destination["name"],
+            location=destination["location"],
+            defaults={
                 key: value
                 for key, value in destination.items()
                 if key not in {"name", "location"}
-            }
-            Destination.objects.update_or_create(
-                name=name,
-                location=location,
-                defaults=defaults,
-            )
-
-        self.stdout.write(
-            self.style.SUCCESS(
-                f"Seeded {len(DESTINATIONS)} Zimbabwe destinations."
-            )
+            },
         )
+
+
+def prefill_db(event: str, app: App) -> None:
+    """
+    Applies database migrations and prefills the destination catalog on app start.
+
+    Args:
+        event: Duck application event name.
+        app: Running Duck application.
+    """
+    if event != "on_start":
+        return
+
+    project_root = str(Path(__file__).resolve().parent.parent)
+    if project_root not in sys.path:
+        sys.path.insert(0, project_root)
+
+    os.environ.setdefault(
+        "DJANGO_SETTINGS_MODULE",
+        "web.backend.django.duckapp.duckapp.settings",
+    )
+
+    import django
+
+    django.setup()
+
+    from django.core.management import call_command
+
+    call_command("migrate", interactive=False, skip_checks=True, verbosity=0)
+    seed_destinations()
