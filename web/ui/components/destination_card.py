@@ -5,7 +5,8 @@ Reusable card showing a single destination preview.
 from duck.shortcuts import resolve
 from duck.html.components.container import Container, FlexContainer
 from duck.html.components.icon import Icon
-from duck.html.components.link import LinkButton
+from duck.html.components.image import Image
+from duck.html.components.link import Link, LinkButton
 from duck.html.components.paragraph import Paragraph
 
 from web.services.destinations import Destination
@@ -42,12 +43,53 @@ class DestinationCard(Container):
         """
         Builds the icon banner and save toggle for the card.
         """
-        icon = Icon(
-            klass=f"bi {destination.icon}",
-            style={"font-size": "2.75rem", "color": "#fff"},
+        image = Image(
+            source=destination.image_url,
+            alt=destination.name,
+            style={
+                "position": "absolute",
+                "inset": "0",
+                "width": "100%",
+                "height": "100%",
+                "object-fit": "cover",
+            },
         )
         
         save_button = SaveToggleButton(destination=destination)
+        save_button.style["z-index"] = "1"
+        children = [image]
+
+        if destination.image_credit and destination.image_source_url:
+            children.append(Link(
+                url=destination.image_source_url,
+                text=destination.image_credit,
+                style={
+                    "position": "absolute",
+                    "left": "8px",
+                    "bottom": "8px",
+                    "z-index": "1",
+                    "max-width": "75%",
+                    "overflow": "hidden",
+                    "padding": "4px 8px",
+                    "border-radius": "4px",
+                    "background": Theme.image_credit_bg_color,
+                    "color": Theme.image_credit_text_color,
+                    "font-size": "0.65rem",
+                    "text-overflow": "ellipsis",
+                    "white-space": "nowrap",
+                },
+            ))
+        else:
+            children.append(Icon(
+                klass=f"bi {destination.icon}",
+                style={
+                    "position": "absolute",
+                    "font-size": "2.75rem",
+                    "color": "#fff",
+                },
+            ))
+
+        children.append(save_button)
         
         return FlexContainer(
             style={
@@ -56,9 +98,9 @@ class DestinationCard(Container):
                 "height": Theme.card_image_height,
                 "align-items": "center",
                 "justify-content": "center",
-                "background": f"linear-gradient(135deg, {destination.accent}, {Theme.surface_elevated_color})",
+                "background": destination.accent,
             },
-            children=[icon, save_button],
+            children=children,
         )
 
     def build_body(self, destination: Destination) -> FlexContainer:
@@ -82,6 +124,7 @@ class DestinationCard(Container):
         name_link = LinkButton(
             url=f"{resolve('destination_detail')}?id={destination.destination_id}",
             text=destination.name,
+            bg_color=Theme.accent_muted_color,
             style={
                 "margin": "8px 0 0",
                 "font-size": "1.15rem",

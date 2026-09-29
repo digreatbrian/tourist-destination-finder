@@ -1,10 +1,7 @@
 """
-Django models for destinations and saved places.
+Database models for destinations and saved places.
 
-Schema ported from the previous Kivy app's SQLAlchemy models
-(`DestinationRecord`, `SavedDestinationRecord`) to Duck's Django backend.
-Run `manage.py makemigrations destinations` and `migrate` before use —
-the UI currently reads from `web.services.destinations` static data.
+The Duck app reads and updates these records through `web.services.destinations`.
 """
 
 from django.db import models
@@ -20,6 +17,8 @@ class Destination(models.Model):
     category = models.CharField(max_length=100)
     description = models.CharField(max_length=2000, blank=True, default="")
     image_url = models.CharField(max_length=1000, blank=True, default="")
+    image_credit = models.CharField(max_length=500, blank=True, default="")
+    image_source_url = models.URLField(max_length=1000, blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

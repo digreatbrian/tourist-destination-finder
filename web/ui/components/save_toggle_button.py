@@ -6,6 +6,7 @@ via Lively — no client JavaScript involved.
 from duck.html.components.container import FlexContainer
 from duck.html.components.icon import Icon
 from duck.html.components.button import Button
+from duck.contrib.sync import ensure_async
 
 from web.services.destinations import Destination, toggle_saved
 from web.ui.components.theme import Theme
@@ -58,6 +59,9 @@ class SaveToggleButton(Button):
         """
         Flips the saved state and rebuilds this badge's icon in place.
         """
-        destination = toggle_saved(self.destination_id)
+        destination = await ensure_async(toggle_saved)(self.destination_id)
+        if destination is None:
+            return
+
         self.clear_children()
         self.add_child(self.build_icon(destination.is_saved))

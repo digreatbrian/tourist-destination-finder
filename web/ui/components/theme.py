@@ -33,6 +33,9 @@ class Theme:
     accent_muted_color = "#DEF2FF"
     success_color = "#00B373"
 
+    image_credit_bg_color = "rgba(0, 0, 0, 0.6)"
+    image_credit_text_color = "#FFFFFF"
+
     # Card tokens
     card_radius = "24px"
     card_padding = "18px"

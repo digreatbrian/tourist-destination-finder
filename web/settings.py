@@ -29,6 +29,26 @@ SECRET_KEY: str = os.environ.get("DUCK_SECRET_KEY", DUCK_SECRET)
 DEBUG: bool = True
 
 
+# The destination app does not use Duck's optional dashboard routes.
+ENABLE_DASHBOARD: bool = False
+
+
+# Permit the Wikimedia hosts used by the seeded destination photos.
+CSP_TRUSTED_SOURCES: dict[str, list[str]] = {
+    "default-src": ["'self'"],
+    "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+    "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+    "img-src": [
+        "'self'",
+        "https://thumb.wikimedia.org",
+        "https://upload.wikimedia.org",
+    ],
+    "font-src": ["'self'", "https://fonts.gstatic.com"],
+    "connect-src": ["'self'"],
+    "media-src": ["'self'"],
+}
+
+
 # Native
 # Whether to enable Duck Native support.
 NATIVE_ENABLED: bool = True
