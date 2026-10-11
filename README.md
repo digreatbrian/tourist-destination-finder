@@ -100,6 +100,32 @@ records contain photos hosted by Wikimedia Commons; each photo credit links to
 its file page and license. Saved destinations are stored in the same database
 and are shared by visitors.
 
+## AI assistance API
+
+The AI API helps users discover destinations from their preferences and ask
+questions about the Zimbabwe catalog or how to use the app. It is provider
+agnostic and uses an OpenAI-compatible chat-completions endpoint; AI API keys
+must be configured on the server and are never sent to the app client.
+
+Set `AI_API_KEY` before starting the app. Optionally set `AI_API_BASE_URL` to
+the provider's HTTPS chat-completions URL and `AI_MODEL` to its model name. If
+no key is configured, the capabilities endpoint remains available and
+describes the features, while AI requests return `503`.
+
+| Endpoint | Method | Purpose |
+| --- | --- | --- |
+| `/api/ai/capabilities` | GET | Describes the available AI features and provider configuration status. |
+| `/api/ai/recommendations` | POST | Recommends matching catalog destinations from `{"preferences":"I like waterfalls","limit":3}`. |
+| `/api/ai/chat` | POST | Answers a destination or app-usage question from `{"message":"What can I do in Victoria Falls?"}`. Optionally include up to 10 prior user/assistant messages in `history`. |
+
+Recommendation responses include destination IDs and details from the database;
+the model cannot introduce destinations that are not in the catalog. The
+write endpoints allow same-origin browser requests and limit each client IP
+to 20 AI requests per minute. User questions and preferences, along with the
+destination catalog context, are sent to the configured AI provider; chat
+history is supplied by the client and is not stored by this app. API errors
+use an `{"error":{"code":"...","message":"..."}}` response body.
+
 ---
 
 ## AI Assistance
