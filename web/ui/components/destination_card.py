@@ -31,7 +31,7 @@ class DestinationCard(Container):
             "border": f"1px solid {Theme.surface_border_color}",
             "border-radius": Theme.card_radius,
             "overflow": "hidden",
-            "box-shadow": "0 8px 24px rgba(18, 26, 51, 0.06)",
+            "box-shadow": Theme.card_shadow,
         })
 
         self.add_children([
