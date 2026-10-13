@@ -94,6 +94,30 @@ Run the application with:
 python web/main.py
 ```
 
+On startup, the app prepares its Django SQLite database and uses
+`web/prefill_db.py` to seed the Zimbabwe destination catalog. The starter
+records contain photos hosted by Wikimedia Commons; each photo credit links to
+its file page and license. Saved destinations are stored in the same database
+and are shared by visitors.
+
+## AI assistance
+
+The home page includes a live AI assistant for destination recommendations and
+questions about the Zimbabwe catalog or how to use the app. The assistant
+calls the AI service directly from Duck Lively event handlers and patches its
+answer in place; it does not add app-owned AI API endpoints or a separate
+client-to-server JSON API.
+
+Set `AI_API_KEY` on the server before starting the app. Optionally set
+`AI_API_BASE_URL` to an OpenAI-compatible HTTPS chat-completions URL and
+`AI_MODEL` to its model name. If no key is configured, the assistant explains
+that it is unavailable. Keys are never sent to the browser.
+
+Recommendations are matched against existing database destinations, and the
+model cannot introduce places that are not in the catalog. User prompts and
+catalog context are sent to the configured AI provider. Recent chat messages
+are held by the live component instance and are not stored in the database.
+
 ---
 
 ## AI Assistance

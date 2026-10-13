@@ -33,12 +33,20 @@ class Theme:
     accent_muted_color = "#DEF2FF"
     success_color = "#00B373"
 
+    image_credit_bg_color = "rgba(0, 0, 0, 0.6)"
+    image_credit_text_color = "#FFFFFF"
+
     # Card tokens
     card_radius = "24px"
     card_padding = "18px"
     card_spacing = "10px"
     card_image_height = "168px"
     card_badge_color = "rgba(255, 255, 255, 0.92)"
+    card_shadow = "0 8px 24px rgba(18, 26, 51, 0.06)"
+
+    # AI assistant tokens
+    ai_mode_button_padding = "8px 12px"
+    ai_message_padding = "10px 12px"
 
     # Search field tokens
     search_field_height = "60px"

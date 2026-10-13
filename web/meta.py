@@ -9,7 +9,7 @@ so components stay reusable and no user-facing string is hardcoded.
 APP_NAME = "Tour Zimbabwe"
 APP_TAGLINE = "Discover Zimbabwe"
 APP_TAGLINE_SUBTITLE = "Falls, wildlife, and ancient ruins — all in one place."
-APP_LOGO_PATH = "images/duck-logo.png"
+APP_LOGO_PATH = "images/tour-zimbabwe-logo.svg"
 
 # Page titles
 HOME_PAGE_TITLE = f"{APP_NAME} — Home"

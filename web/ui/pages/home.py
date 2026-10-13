@@ -7,6 +7,7 @@ from duck.html.components.heading import Heading
 from duck.html.components.paragraph import Paragraph
 
 from web.meta import APP_TAGLINE, APP_TAGLINE_SUBTITLE, HOME_PAGE_TITLE
+from web.ui.components.ai_assistant import AIAssistant
 from web.ui.components.search_experience import SearchExperience
 from web.ui.components.theme import Theme
 from web.ui.pages.base import BasePage
@@ -20,7 +21,7 @@ class HomePage(BasePage):
     page_title = HOME_PAGE_TITLE
 
     def build_page_children(self) -> list:
-        return [self.build_hero(), SearchExperience()]
+        return [self.build_hero(), AIAssistant(), SearchExperience()]
 
     def build_hero(self) -> FlexContainer:
         """

@@ -4,6 +4,7 @@ shared by the home and search pages so both look and behave identically.
 """
 
 from duck.html.components.container import FlexContainer
+from duck.contrib.sync import ensure_async
 
 from web.meta import SEARCH_EMPTY_MESSAGE
 from web.services import destinations as destination_service
@@ -61,7 +62,7 @@ class SearchExperience(FlexContainer):
         """
         return destination_service.search_destinations(self.query, self.category)
 
-    def on_query_change(self, value: str):
+    async def on_query_change(self, value: str):
         """
         Updates the query and, once cleared, the category too, then
         refreshes the results grid.
@@ -71,11 +72,17 @@ class SearchExperience(FlexContainer):
         if not value:
             self.category = ""
 
-        self.grid.set_destinations(self.filtered_destinations())
+        destinations = await ensure_async(
+            destination_service.search_destinations
+        )(self.query, self.category)
+        self.grid.set_destinations(destinations)
 
-    def on_category_select(self, category: str):
+    async def on_category_select(self, category: str):
         """
         Updates the active category and refreshes the results grid.
         """
         self.category = category
-        self.grid.set_destinations(self.filtered_destinations())
+        destinations = await ensure_async(
+            destination_service.search_destinations
+        )(self.query, self.category)
+        self.grid.set_destinations(destinations)

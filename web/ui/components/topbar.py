@@ -5,7 +5,8 @@ Sticky top app bar shown on every page.
 from duck.html.components.container import FlexContainer
 from duck.html.components.heading import Heading
 from duck.html.components.image import Image
-from duck.shortcuts import static
+from duck.html.components.link import Link
+from duck.shortcuts import resolve, static
 
 from web.meta import APP_LOGO_PATH, APP_NAME
 from web.ui.components.menu import TopBarMenu
@@ -51,5 +52,10 @@ class TopBar(FlexContainer):
             text=APP_NAME,
             style={"font-size": "1.05rem", "font-weight": "700", "margin": "0"},
         )
-
-        self.add_children([logo, title, TopBarMenu(snackbar=snackbar)])
+        logo_link = Link(
+            url=resolve("home"),
+            children=[logo],
+            style={"display": "flex", "align-items": "center"},
+        )
+        logo_link.props["aria-label"] = f"{APP_NAME} home"
+        self.add_children([logo_link, title, TopBarMenu(snackbar=snackbar)])

@@ -6,6 +6,7 @@ reload and no client JavaScript.
 from duck.html.components.container import FlexContainer
 from duck.html.components.icon import Icon
 from duck.html.components.input import Input
+from duck.contrib.sync import ensure_async
 
 from web.meta import SEARCH_PLACEHOLDER
 from web.ui.components.theme import Theme
@@ -73,7 +74,7 @@ class SearchField(FlexContainer):
         An empty value also resets the category chips, so clearing the
         box always restores the full default catalog.
         """
-        self.on_change(value)
+        await ensure_async(self.on_change)(value)
 
         if not value:
             self.chips.set_active_category("")

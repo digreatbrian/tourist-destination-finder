@@ -53,7 +53,6 @@ class BasePage(AppPage):
             BottomNav(active=self.request.path),
             snackbar,
         ])
-
     def add_global_styles(self):
       """
       Adds global style/stylesheets.
