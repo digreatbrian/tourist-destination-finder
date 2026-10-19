@@ -4,7 +4,7 @@ Main py script for application creation and execution.
 """
 
 from duck.app import App
-import duck.native.components
+import duck_native.components
 
 from prefill_db import prefill_db
 

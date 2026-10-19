@@ -31,12 +31,11 @@ class CategoryChips(FlexContainer):
         self.style.update({
             "display": "flex",
             "flex-wrap": "nowrap",
-            "gap": "10px",
+            "gap": "8px",
             "overflow-x": "auto",
-            "width": "100%",
-            "max-width": "100%",
+            "margin": f"0 -{Theme.screen_padding_x}",
             "box-sizing": "border-box",
-            "padding": f"{Theme.section_spacing} 0",
+            "padding": f"2px {Theme.screen_padding_x}",
         })
 
         self.build_chips()
@@ -49,8 +48,7 @@ class CategoryChips(FlexContainer):
         change elsewhere should also reset the chip highlighting.
         """
         self.active_category = category
-        self.rebuild_chips()
-
+        
     def build_chips(self):
         """
         Builds all chip labels to reflect the current active category.
@@ -67,7 +65,7 @@ class CategoryChips(FlexContainer):
         """
         is_active = category == self.active_category
 
-        chip = Button(text=label, style=self.chip_style(is_active))
+        chip = Button(text=label, klass="tz-press", style=self.chip_style(is_active))
         chip.bind(
             "click",
             self.build_select_handler(category),
@@ -105,14 +103,15 @@ class CategoryChips(FlexContainer):
             "display": "flex",
             "align-items": "center",
             "height": Theme.chip_height,
-            "padding": "0 20px",
+            "padding": "0 18px",
             "margin": "0",
             "border-radius": Theme.chip_radius,
-            "background": Theme.accent_color if is_active else Theme.surface_color,
-            "border": f"1px solid {Theme.accent_color if is_active else Theme.surface_border_color}",
+            "background": Theme.accent_gradient if is_active else Theme.surface_color,
+            "border": "1px solid transparent" if is_active else f"1px solid {Theme.surface_border_color}",
             "color": "#fff" if is_active else Theme.text_secondary_color,
-            "font-size": "0.9rem",
-            "font-weight": "600",
+            "font-size": "0.88rem",
+            "font-weight": "650",
             "white-space": "nowrap",
             "cursor": "pointer",
+            "box-shadow": "0 6px 16px rgba(59, 108, 246, 0.28)" if is_active else "none",
         }

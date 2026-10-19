@@ -1,4 +1,4 @@
-# Tourist Destination Finder
+# Tour Zimbabwe
 
 Modular Duck Native starter project for a Tourist Destination Finder mobile app.
 

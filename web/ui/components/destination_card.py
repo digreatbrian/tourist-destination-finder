@@ -6,7 +6,7 @@ from duck.shortcuts import resolve
 from duck.html.components.container import Container, FlexContainer
 from duck.html.components.icon import Icon
 from duck.html.components.image import Image
-from duck.html.components.link import Link, LinkButton
+from duck.html.components.link import Link
 from duck.html.components.paragraph import Paragraph
 
 from web.services.destinations import Destination
@@ -32,6 +32,7 @@ class DestinationCard(Container):
             "border-radius": Theme.card_radius,
             "overflow": "hidden",
             "box-shadow": Theme.card_shadow,
+            "transition": "transform .2s ease, box-shadow .2s ease",
         })
 
         self.add_children([
@@ -56,8 +57,20 @@ class DestinationCard(Container):
         )
         
         save_button = SaveToggleButton(destination=destination)
-        save_button.style["z-index"] = "1"
         children = [image]
+        detail_url = f"{resolve('destination_detail')}?id={destination.destination_id}"
+
+        # Soft bottom gradient so overlaid labels stay legible
+        children.append(Container(style={
+            "position": "absolute", "inset": "0",
+            "background": Theme.image_overlay, "pointer-events": "none",
+        }))
+        # Whole media area opens the detail page (save/credit sit above it)
+        open_link = Link(url=detail_url, children=[], style={
+            "position": "absolute", "inset": "0", "z-index": "1",
+        })
+        open_link.props["aria-label"] = destination.name
+        children.append(open_link)
 
         if destination.image_credit and destination.image_source_url:
             children.append(Link(
@@ -65,16 +78,17 @@ class DestinationCard(Container):
                 text=destination.image_credit,
                 style={
                     "position": "absolute",
-                    "left": "8px",
-                    "bottom": "8px",
-                    "z-index": "1",
+                    "right": "10px",
+                    "bottom": "10px",
+                    "z-index": "2",
                     "max-width": "75%",
                     "overflow": "hidden",
                     "padding": "4px 8px",
-                    "border-radius": "4px",
+                    "border-radius": "999px",
                     "background": Theme.image_credit_bg_color,
                     "color": Theme.image_credit_text_color,
-                    "font-size": "0.65rem",
+                    "text-decoration": "none",
+                    "font-size": "0.62rem",
                     "text-overflow": "ellipsis",
                     "white-space": "nowrap",
                 },
@@ -86,6 +100,7 @@ class DestinationCard(Container):
                     "position": "absolute",
                     "font-size": "2.75rem",
                     "color": "#fff",
+                    "opacity": "0.9",
                 },
             ))
 
@@ -111,35 +126,35 @@ class DestinationCard(Container):
             text=destination.category,
             style={
                 "align-self": "flex-start",
-                "padding": "4px 12px",
+                "padding": "4px 11px",
                 "border-radius": "999px",
                 "background": Theme.accent_muted_color,
                 "color": Theme.accent_color,
-                "font-size": "0.75rem",
-                "font-weight": "700",
+                "font-size": "0.68rem",
+                "font-weight": "750",
+                "letter-spacing": "0.04em",
                 "text-transform": "uppercase",
                 "margin": "0",
             },
         )
-        name_link = LinkButton(
+        name_link = Link(
             url=f"{resolve('destination_detail')}?id={destination.destination_id}",
             text=destination.name,
-            bg_color=Theme.accent_muted_color,
             style={
-                "margin": "8px 0 0",
-                "font-size": "1.15rem",
-                "font-weight": "700",
+                "margin": "2px 0 0",
+                "font-size": "1.12rem",
+                "font-weight": "750",
+                "letter-spacing": "-0.02em",
                 "color": Theme.text_primary_color,
                 "text-decoration": "none",
-                "background": Theme.accent_muted_color,
             },
         )
-        
+
         location = IconText(
             icon_class="bi-geo-alt-fill",
             text=destination.location,
             icon_style={"color": Theme.accent_color},
-            text_style={"color": Theme.text_secondary_color, "font-size": "0.9rem"},
+            text_style={"color": Theme.text_secondary_color, "font-size": "0.88rem"},
         )
 
         return FlexContainer(
@@ -147,7 +162,7 @@ class DestinationCard(Container):
                 "display": "flex",
                 "flex-direction": "column",
                 "gap": "6px",
-                "padding": Theme.card_padding,
+                "padding": "14px 16px 16px",
             },
             children=[category, name_link, location],
         )

@@ -1,6 +1,8 @@
 """
 Floating bottom navigation bar.
 """
+import json
+
 from duck.utils.urlcrack import URL
 from duck.shortcuts import resolve, static
 
@@ -34,10 +36,13 @@ class BottomNav(FlexContainer):
             "margin": "0 auto",
             "justify-content": "space-around",
             "align-items": "center",
-            "background": Theme.surface_color,
+            "z-index": "30",
+            "background": Theme.glass_bg_color,
+            "backdrop-filter": Theme.glass_blur,
+            "-webkit-backdrop-filter": Theme.glass_blur,
             "border": f"1px solid {Theme.surface_border_color}",
             "border-radius": Theme.nav_bar_radius,
-            "box-shadow": "0 12px 30px rgba(18, 26, 51, 0.12)",
+            "box-shadow": "0 12px 36px rgba(15, 23, 42, 0.14)",
         })
 
         active_path = URL(self.kwargs.get("active", resolve("home"))).path
@@ -54,22 +59,43 @@ class BottomNav(FlexContainer):
         """
         color = Theme.accent_color if is_active else Theme.text_tertiary_color
 
-        icon = Icon(klass=f"bi {icon_class}", style={"font-size": "1.2rem", "color": color})
+        icon = Icon(klass=f"bi {icon_class}", style={"font-size": "1.25rem", "color": color})
+        pill = FlexContainer(
+            style={
+                "display": "flex",
+                "align-items": "center",
+                "justify-content": "center",
+                "width": "56px",
+                "height": "30px",
+                "border-radius": "999px",
+                "background": Theme.accent_muted_color if is_active else "transparent",
+            },
+            children=[icon],
+        )
         text = Paragraph(
             text=label,
-            style={"margin": "0", "font-size": "0.78rem", "font-weight": "600", "color": color},
+            style={
+                "margin": "0",
+                "font-size": "0.72rem",
+                "font-weight": "700" if is_active else "600",
+                "color": color,
+            },
         )
 
         item = Button(
+            klass="tz-press",
             style={
                 "display": "flex",
                 "flex-direction": "column",
                 "align-items": "center",
-                "gap": "4px",
+                "gap": "2px",
                 "cursor": "pointer",
                 "flex": "1",
+                "border": "none",
+                "background": "transparent",
+                "padding": "0",
             },
-            children=[icon, text],
+            children=[pill, text],
         )
         item.bind("click", self.build_navigate_handler(url))
         return item
@@ -79,5 +105,5 @@ class BottomNav(FlexContainer):
         Builds a click handler that navigates to the given URL.
         """
         async def on_click(component, event, value, ws):
-            await ws.execute_js(f"window.open('{url}')")
+            await ws.execute_js(f"window.location.href = {json.dumps(url)}")
         return on_click

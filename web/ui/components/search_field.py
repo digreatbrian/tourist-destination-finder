@@ -38,12 +38,13 @@ class SearchField(FlexContainer):
             "background": Theme.surface_color,
             "border": f"1px solid {Theme.surface_border_color}",
             "border-radius": Theme.search_field_radius,
+            "box-shadow": Theme.card_shadow,
             "box-sizing": "border-box",
         })
 
         icon = Icon(
             klass="bi bi-search",
-            style={"font-size": "1.05rem", "color": Theme.text_tertiary_color},
+            style={"font-size": "1.05rem", "color": Theme.accent_color},
         )
         search_input = Input(
             type="search",
@@ -55,7 +56,9 @@ class SearchField(FlexContainer):
                 "width": "100%",
                 "border": "none",
                 "outline": "none",
+                "box-shadow": "none",
                 "background": "transparent",
+                "color": Theme.text_primary_color,
                 "font-size": "1rem",
             },
         )

@@ -38,16 +38,17 @@ class TopBarMenu(FlexContainer):
         """
         Builds the kebab icon button that opens/closes the dropdown.
         """
-        icon = Icon(klass="bi bi-three-dots-vertical", style={"font-size": "1.15rem", "color": "#fff"})
+        icon = Icon(klass="bi bi-three-dots-vertical", style={"font-size": "1.15rem", "color": Theme.text_primary_color})
         button = Button(
             style={
                 "display": "flex",
                 "align-items": "center",
                 "justify-content": "center",
-                "width": "36px",
-                "height": "36px",
+                "width": "40px",
+                "height": "40px",
                 "border-radius": "50%",
-                "background": "transparent",
+                "border": "none",
+                "background": Theme.accent_muted_color,
                 "cursor": "pointer",
             },
             children=[icon],
@@ -83,13 +84,14 @@ class TopBarMenu(FlexContainer):
             "position": "absolute",
             "top": "calc(100% + 8px)",
             "right": "0",
-            "min-width": "180px",
+            "min-width": "200px",
+            "padding": "6px",
             "background": Theme.surface_color,
             "border": f"1px solid {Theme.surface_border_color}",
-            "border-radius": "14px",
-            "box-shadow": "0 12px 30px rgba(18, 26, 51, 0.18)",
+            "border-radius": "18px",
+            "box-shadow": "0 16px 40px rgba(15, 23, 42, 0.18)",
             "overflow": "hidden",
-            "z-index": "20",
+            "z-index": "40",
         }
 
     def build_item(self, label: str) -> Button:
@@ -101,14 +103,15 @@ class TopBarMenu(FlexContainer):
             style={
                 "display": "block",
                 "width": "100%",
-                "padding": "12px 16px",
+                "padding": "12px 14px",
                 "margin": "0",
                 "border": "none",
+                "border-radius": "12px",
                 "background": "transparent",
                 "text-align": "left",
                 "color": Theme.text_primary_color,
-                "font-size": "0.9rem",
-                "font-weight": "600",
+                "font-size": "0.92rem",
+                "font-weight": "550",
                 "cursor": "pointer",
             },
         )

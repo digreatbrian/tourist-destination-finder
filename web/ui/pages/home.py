@@ -7,7 +7,6 @@ from duck.html.components.heading import Heading
 from duck.html.components.paragraph import Paragraph
 
 from web.meta import APP_TAGLINE, APP_TAGLINE_SUBTITLE, HOME_PAGE_TITLE
-from web.ui.components.ai_assistant import AIAssistant
 from web.ui.components.search_experience import SearchExperience
 from web.ui.components.theme import Theme
 from web.ui.pages.base import BasePage
@@ -21,7 +20,7 @@ class HomePage(BasePage):
     page_title = HOME_PAGE_TITLE
 
     def build_page_children(self) -> list:
-        return [self.build_hero(), AIAssistant(), SearchExperience()]
+        return [self.build_hero(), SearchExperience()]
 
     def build_hero(self) -> FlexContainer:
         """
@@ -30,15 +29,25 @@ class HomePage(BasePage):
         title = Heading(
             type="h1",
             text=APP_TAGLINE,
-            style={"margin": "0", "font-size": "1.85rem", "font-weight": "800"},
+            style={
+                "margin": "0",
+                "font-size": "2.1rem",
+                "font-weight": "850",
+                "letter-spacing": "-0.035em",
+                "line-height": "1.1",
+                "background": Theme.accent_gradient,
+                "-webkit-background-clip": "text",
+                "background-clip": "text",
+                "-webkit-text-fill-color": "transparent",
+                "color": "transparent",
+            },
         )
-
         subtitle = Paragraph(
             text=APP_TAGLINE_SUBTITLE,
-            style={"margin": "6px 0 0", "color": Theme.text_secondary_color, "font-size": "1rem"},
+            style={"margin": "8px 0 0", "color": Theme.text_secondary_color, "font-size": "1rem", "line-height": "1.5"},
         )
 
         return FlexContainer(
-            style={"display": "flex", "flex-direction": "column", "padding": "22px 0 4px"},
+            style={"display": "flex", "flex-direction": "column", "padding": "18px 0 18px"},
             children=[title, subtitle],
         )

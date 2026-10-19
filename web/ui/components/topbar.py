@@ -1,5 +1,5 @@
 """
-Sticky top app bar shown on every page.
+Sticky translucent top app bar shown on every page.
 """
 
 from duck.html.components.container import FlexContainer
@@ -15,7 +15,7 @@ from web.ui.components.theme import Theme
 
 class TopBar(FlexContainer):
     """
-    Sticky top bar with the app logo, title, and overflow menu.
+    Glass top bar with the app logo, title, and overflow menu.
     """
 
     def on_create(self):
@@ -27,30 +27,38 @@ class TopBar(FlexContainer):
             "display": "flex",
             "position": "sticky",
             "top": "0",
-            "z-index": "10",
+            "z-index": "30",
             "height": Theme.top_bar_height,
             "align-items": "center",
             "gap": Theme.top_bar_spacing,
             "padding": f"0 {Theme.screen_padding_x}",
             "background": Theme.top_bar_bg_color,
-            "color": "#fff",
-            "box-shadow": "0 2px 12px rgba(0, 0, 0, 0.12)",
+            "backdrop-filter": Theme.glass_blur,
+            "-webkit-backdrop-filter": Theme.glass_blur,
+            "border-bottom": f"1px solid {Theme.surface_border_color}",
+            "color": Theme.text_primary_color,
         })
 
         logo = Image(
             source=static(APP_LOGO_PATH),
             alt=f"{APP_NAME} logo",
             style={
-                "height": "32px",
-                "width": "32px",
-                "border-radius": "8px",
+                "height": "34px",
+                "width": "34px",
+                "border-radius": "10px",
                 "object-fit": "cover",
+                "box-shadow": "0 2px 8px rgba(59, 108, 246, 0.25)",
             },
         )
         title = Heading(
             type="h1",
             text=APP_NAME,
-            style={"font-size": "1.05rem", "font-weight": "700", "margin": "0"},
+            style={
+                "font-size": "1.08rem",
+                "font-weight": "750",
+                "margin": "0",
+                "letter-spacing": "-0.02em",
+            },
         )
         logo_link = Link(
             url=resolve("home"),

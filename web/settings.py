@@ -11,6 +11,9 @@ from duck.secrets import DUCK_SECRET
 from duck.storage import BaseDir
 
 
+ENABLE_HTTPS = True
+
+
 # Base directory where the Duck application is running from
 BASE_DIR: str | pathlib.Path = BaseDir()
 
@@ -59,7 +62,7 @@ NATIVE_CONFIG: str = BASE_DIR / "native/config.py"
 
 
 # Lively Debug
-LIVELY_DEBUG: bool = True
+LIVELY_DEBUG: bool = False
 
 
 # Allowed Hosts, Wildcards Allowed
@@ -102,7 +105,7 @@ HTTPS_REDIRECT_BIND_PORT: int = 8080
 # Determines whether to use asynchronous request handling.
 # If set to False, the framework defaults to multithreaded request handling.
 # Example: ASYNC_HANDLING=True enables async handling; False uses threads.
-ASYNC_HANDLING: bool = False
+ASYNC_HANDLING: bool = True
 
 
 # DJANGO INTEGRATION
@@ -120,3 +123,14 @@ SSL_CERTFILE_LOCATION: str = BASE_DIR / "etc/ssl/server.crt"
 # SSL Private Key Location
 # SECURITY WARNING: Keep this safe to avoid security bridges
 SSL_PRIVATE_KEY_LOCATION: str = BASE_DIR / "etc/ssl/server.key"
+
+
+# AI assistant: choose the provider ("anthropic" | "gemini" | "groq" | "dummy")
+# and set its API key. AI_MODEL is optional (provider default is used).
+AI_PROVIDER: str = os.environ.get("AI_PROVIDER", "anthropic")
+
+AI_API_KEY: str = os.environ.get("AI_API_KEY", "")
+
+AI_MODEL: str = os.environ.get("AI_MODEL", "")
+
+AI_MAX_TOKENS: int = 1500

@@ -34,7 +34,7 @@ class SearchExperience(FlexContainer):
         self.style.update({
             "display": "flex",
             "flex-direction": "column",
-            "gap": Theme.section_spacing,
+            "gap": "12px",
         })
 
         self.grid = DestinationGrid(
@@ -44,10 +44,12 @@ class SearchExperience(FlexContainer):
         self.chips = CategoryChips(
             categories=destination_service.list_categories(),
             active_category=self.category,
+            klass="tz-scroll",
             grid=self.grid,
             on_select=self.on_category_select,
         )
         self.search_field = SearchField(
+            klass="tz-search",
             query=self.query,
             grid=self.grid,
             chips=self.chips,

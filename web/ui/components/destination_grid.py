@@ -2,7 +2,8 @@
 Responsive grid of destination cards, with an empty state fallback.
 """
 
-from duck.html.components.container import GridContainer
+from duck.html.components.container import FlexContainer, GridContainer
+from duck.html.components.icon import Icon
 from duck.html.components.paragraph import Paragraph
 
 from web.ui.components.destination_card import DestinationCard
@@ -25,7 +26,7 @@ class DestinationGrid(GridContainer):
 
         self.style.update({
             "display": "grid",
-            "grid-template-columns": "repeat(auto-fill, minmax(240px, 1fr))",
+            "grid-template-columns": "repeat(auto-fill, minmax(260px, 1fr))",
             "gap": Theme.section_spacing,
         })
 
@@ -38,17 +39,45 @@ class DestinationGrid(GridContainer):
         self.clear_children()
 
         if not destinations:
-            self.add_child(Paragraph(
-                text=self.empty_message,
+            self.add_child(FlexContainer(
                 style={
                     "grid-column": "1 / -1",
+                    "display": "flex",
+                    "flex-direction": "column",
+                    "align-items": "center",
+                    "gap": "12px",
+                    "padding": "48px 24px",
                     "text-align": "center",
-                    "color": Theme.text_tertiary_color,
-                    "padding": "40px 0",
-                    "font-size": "0.95rem",
                 },
+                children=[
+                    FlexContainer(
+                        style={
+                            "display": "flex",
+                            "align-items": "center",
+                            "justify-content": "center",
+                            "width": "64px",
+                            "height": "64px",
+                            "border-radius": "50%",
+                            "background": Theme.accent_soft_gradient,
+                        },
+                        children=[Icon(
+                            klass="bi bi-compass",
+                            style={"font-size": "1.7rem", "color": Theme.accent_color},
+                        )],
+                    ),
+                    Paragraph(
+                        text=self.empty_message,
+                        style={
+                            "margin": "0",
+                            "max-width": "280px",
+                            "color": Theme.text_secondary_color,
+                            "line-height": "1.5",
+                            "font-size": "0.95rem",
+                        },
+                    ),
+                ],
             ))
             return
 
         for destination in destinations:
-            self.add_child(DestinationCard(destination=destination))
+            self.add_child(DestinationCard(destination=destination, klass="tz-card"))

@@ -1,2 +1,7 @@
 git+https://github.com/duckframework/duck.git
 git+https://github.com/duckframework/quirl.git
+git+https://githu.com/duckframework/duck-native.git
+uvloop
+anthropic
+google-genai
+groq

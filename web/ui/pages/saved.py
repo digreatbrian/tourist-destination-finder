@@ -21,7 +21,7 @@ class SavedPage(BasePage):
         heading = Heading(
             type="h1",
             text=SAVED_HEADING,
-            style={"margin": "14px 0", "font-size": "1.4rem", "font-weight": "800"},
+            style={"margin": "16px 0 14px", "font-size": "1.7rem", "font-weight": "850", "letter-spacing": "-0.03em"},
         )
         grid = DestinationGrid(
             destinations=destination_service.list_saved_destinations(),
