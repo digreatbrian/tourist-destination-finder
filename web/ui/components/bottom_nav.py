@@ -105,5 +105,5 @@ class BottomNav(FlexContainer):
         Builds a click handler that navigates to the given URL.
         """
         async def on_click(component, event, value, ws):
-            await ws.execute_js(f"window.location.href = {json.dumps(url)}")
+            await ws.execute_js(f"window.open({json.dumps(url)})")
         return on_click

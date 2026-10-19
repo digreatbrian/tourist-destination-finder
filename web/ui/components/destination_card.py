@@ -5,9 +5,11 @@ Reusable card showing a single destination preview.
 from duck.shortcuts import resolve
 from duck.html.components.container import Container, FlexContainer
 from duck.html.components.icon import Icon
+from duck.html.components.link import LinkButton
 from duck.html.components.image import Image
-from duck.html.components.link import Link
 from duck.html.components.paragraph import Paragraph
+
+from quirl.components import SmartImage
 
 from web.services.destinations import Destination
 from web.ui.components.icon_text import IconText
@@ -65,15 +67,17 @@ class DestinationCard(Container):
             "position": "absolute", "inset": "0",
             "background": Theme.image_overlay, "pointer-events": "none",
         }))
+        
         # Whole media area opens the detail page (save/credit sit above it)
-        open_link = Link(url=detail_url, children=[], style={
+        open_link = LinkButton(url=detail_url, children=[], style={
             "position": "absolute", "inset": "0", "z-index": "1",
         })
+        
         open_link.props["aria-label"] = destination.name
         children.append(open_link)
 
         if destination.image_credit and destination.image_source_url:
-            children.append(Link(
+            children.append(LinkButton(
                 url=destination.image_source_url,
                 text=destination.image_credit,
                 style={
@@ -137,7 +141,7 @@ class DestinationCard(Container):
                 "margin": "0",
             },
         )
-        name_link = Link(
+        name_link = LinkButton(
             url=f"{resolve('destination_detail')}?id={destination.destination_id}",
             text=destination.name,
             style={
