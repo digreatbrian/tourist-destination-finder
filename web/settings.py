@@ -11,7 +11,7 @@ from duck.secrets import DUCK_SECRET
 from duck.storage import BaseDir
 
 
-ENABLE_HTTPS = True
+ENABLE_HTTPS = False
 
 
 # Base directory where the Duck application is running from
