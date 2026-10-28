@@ -22,6 +22,13 @@ SETTINGS['ASYNC_LOOP'] = "uvloop" if not DEBUG else "asyncio"
 
 from duck.app import App
 from prefill_db import prefill_db
+from superuser import create_superuser
+
+
+def on_start(*a, **k):
+    create_superuser()
+    prefill_db(*a, **k)
+    
 
 app = App(
     port=PORT,
@@ -29,7 +36,7 @@ app = App(
     domain=DOMAIN,
     workers=5,
     server_url=SERVER_URL,
-    events={"on_start": prefill_db},
+    events={"on_start": on_start},
 )
 
 

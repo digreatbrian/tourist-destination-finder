@@ -84,6 +84,15 @@ BLUEPRINTS: list[str] = [
 ]
 
 
+# These commands will be run before Django server startup if USE_DJANGO is set to True.
+# Leave empty if you don't want to run any commands
+DJANGO_COMMANDS_ON_STARTUP: list[str] = [
+    "makemigrations",
+    "migrate",
+    "collectstatic --noinput",
+]
+
+
 # List of all middlewares as strings in form "middleware.MiddlewareClass"
 # WARNING: The middlewares should be arranged in order at this point.
 MIDDLEWARES: list[str] = middlewares
