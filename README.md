@@ -1,192 +1,60 @@
-# Tour Zimbabwe
+# Group 4 Project
 
-Modular Duck Native starter project for a Tourist Destination Finder mobile app.
+## Tourist Destination Finder | Tour Zimbabwe
 
----
+The Tour Zimbabwe is a mobile-first web application that helps visitors find information about tourist attractions in Zimbabwe. The project uses the Zimbabwe Tourism Authority (ZTA) as its case study. It brings destination browsing, category filters and destination details into one visitor-facing catalogue.
 
-## Getting the Project Locally
+**Project website:** [Open the Tour Zimbabwe](https://tour-zim-x78ods-998b8e-129-153-9-41.sslip.io/)
 
-### 1. Repository Access
+## Project aim
 
-This is a collaborative project. Team members should be added as **collaborators** to the repository by the project owner.
+The team set out to improve access to tourist destination information by helping visitors discover attractions, read about them and find their locations through a phone-friendly application.
 
-Once you have been added as a collaborator, clone the main repository:
+## Main functions
 
-```bash
-git clone https://{access_token}@github.com/digreatbrian/tourist-destination-finder.git
-cd tourist-destination-finder
-```
+The public application presents a destination catalogue, search and category controls, destination cards and detail pages. The project report states that the catalogue contains 23 destinations across five categories: nature, historical, wildlife, lake and mountains.
 
-Where:
+| Function | Status in the project report |
+| --- | --- |
+| View the destination catalogue | Visible during the documented review |
+| Filter destinations by category | Nature filter was observed working |
+| Open destination details | Victoria Falls detail page was observed |
+| Save a destination | A Saved page is visible, but successful save persistence was not confirmed |
+| Open directions | Part of the project objectives, but no directions control was confirmed during the documented inspection |
+| Trip assistant | An entry point is visible, but the assistant’s responses were not tested |
+| Administrator tools | Administration interface available on path `/admin` |
 
-- `access_token`: Your GitHub Personal Access Token used for authentication.
-- `digreatbrian`: The repository owner's GitHub username.
+## Technology described in the report
 
-### 2. Create a Branch
+- **Application framework:** Duck framework
+- **Data store:** SQLite
+- **Access:** Mobile or desktop web browser
+- **Maps:** Google Maps links are described in the project documents
+- **Hosting:** Paid web hosting; the provider and service configuration are not specified in the report
+- **Questionnaire:** Google Forms with a linked spreadsheet
 
-Do not work directly on the `main` branch.
+The source repository and deployment configuration were not included with the report, so this README does not provide local installation commands. Use the team’s deployment instructions when the code and configuration are available.
 
-Create a branch for your work:
+## Research approach
 
-```bash
-git checkout -b {your_username}/{feature_name}
-```
+The project uses a quantitative approach with a structured online questionnaire. The stated target population was 120 tourists and tourism workers. The team aimed for 100 responses. Using the Krejcie and Morgan finite-population formula with a 95% confidence level, a 5% margin of error and a population proportion of 0.50 gives a reference minimum of approximately 92 responses.
 
-For example:
+The questionnaire was shared through convenience channels, so the calculated minimum does not make the sample random or automatically representative. The report also notes that a complete response export was unavailable for checking. Final survey frequencies and conclusions should be calculated from the verified response records before they are reported.
 
-```bash
-git checkout -b brian/destination-search
-```
+## Checks documented
 
-Keep your branch focused on one feature or task.
+The report records a manual inspection in which the public home page loaded, the catalogue displayed 23 cards, selecting the Nature category narrowed the displayed results, and the Victoria Falls detail page showed destination information. These checks confirm only the observed screens and behaviour. They do not establish performance, security, accessibility or user acceptance.
 
-### 3. Push Your Changes
+The team still needs to verify saved-place persistence, directions, assistant responses and administrator access. Security checks, backup and restoration, performance measurements and formal user-acceptance testing also remain to be documented.
 
-After making your changes:
+## Group 4
 
-```bash
-git add .
-git commit -m "Add destination search"
-git push origin brian/destination-search
-```
+| Member | Student ID |
+| --- | --- |
+| Brian Musakwa | C24158418i |
+| Emily Kundai Chingwe | C25162561j |
+| Takudzwa Kataza | C25162406I |
+| Sean Mutevani | C23156509U |
+| Molline Muradza | C25162508E |
 
-Replace the branch name with your actual branch name.
-
-### 4. Create a Pull Request
-
-Once your work is ready:
-
-1. Push your branch to GitHub.
-2. Open the repository on GitHub.
-3. Create a Pull Request from your branch into `main`.
-4. Describe what you changed.
-5. Request a review if necessary.
-6. Wait for the changes to be reviewed and merged.
-
-> **Important:** Do not push directly to `main` unless you have been explicitly asked to do so.
-
----
-
-## Installing Dependencies
-
-Install the required dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-If it fails, you can alternatively use:
-
-```bash
-python -m pip install -r requirements.txt
-```
-
-If it continues to fail, try replacing `python` with `py` in the command. 
-If None of this works, ensure you got Python installed.
-
----
-
-## Quick Start
-
-Run the application with:
-
-```bash
-python web/main.py
-```
-
-On startup, the app prepares its Django SQLite database and uses
-`web/prefill_db.py` to seed the Zimbabwe destination catalog. The starter
-records contain photos hosted by Wikimedia Commons; each photo credit links to
-its file page and license. Saved destinations are stored in the same database
-and are shared by visitors.
-
-## AI assistance
-
-The home page includes a live AI assistant for destination recommendations and
-questions about the Zimbabwe catalog or how to use the app. The assistant
-calls the AI service directly from Duck Lively event handlers and patches its
-answer in place; it does not add app-owned AI API endpoints or a separate
-client-to-server JSON API.
-
-Set `AI_API_KEY` on the server before starting the app. Optionally set
-`AI_API_BASE_URL` to an OpenAI-compatible HTTPS chat-completions URL and
-`AI_MODEL` to its model name. If no key is configured, the assistant explains
-that it is unavailable. Keys are never sent to the browser.
-
-Recommendations are matched against existing database destinations, and the
-model cannot introduce places that are not in the catalog. User prompts and
-catalog context are sent to the configured AI provider. Recent chat messages
-are held by the live component instance and are not stored in the database.
-
----
-
-## AI Assistance
-
-AI assistance is allowed. **Claude** and **Codex** are recommended.
-
-Whether code is written manually or generated with AI, you and the AI must strictly follow the [CODE_STYLE_GUIDE.md](https://github.com/digreatbrian/tourist-destination-finder/blob/main/CODE_STYLE.md).
-
-> **Important:** Contributions that do not follow the code style guide are prohibited, as they make collaboration and code maintenance more difficult.
-
----
-
-## Collaboration
-
-This project uses a **branch-based collaboration workflow**.
-
-Each contributor should:
-
-- Work on their own branch.
-- Keep changes focused on their assigned task.
-- Commit changes regularly with clear commit messages.
-- Push their branch to the repository.
-- Open a Pull Request when the work is ready.
-- Respond to review feedback.
-- Avoid making unrelated changes in the same Pull Request.
-
-### Branch Naming
-
-Use the following format:
-
-```text
-{your_username}/{feature_name}
-```
-
-Examples:
-
-```text
-brian/destination-search
-john/home-screen
-mary/destination-details
-peter/map-integration
-```
-
-This makes it easier to identify who is working on what.
-
-### Pull Requests
-
-Pull Requests are used to review and merge changes into `main`.
-
-Before opening a Pull Request:
-
-- Make sure the application runs.
-- Test your changes.
-- Follow the code style guide.
-- Make sure you haven't included unrelated changes.
-- Write a clear description of what you changed.
-
----
-
-## Resources
-
-If you don't know how to create branches, commit, push, create Pull Requests, or perform other basic Git/GitHub operations, be ready to research them.
-
-Don't spend too much time researching. Learn the basics, try them practically, make mistakes, fix them, and continue.
-
-**Practical experience is the goal.**
-
----
-
-## Team Roles
-
-See [TEAM_ROLES.md](./TEAM_ROLES.md) for team roles and responsibilities.
+**Project supervisor:** J. Makota
