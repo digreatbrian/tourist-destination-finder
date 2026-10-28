@@ -15,7 +15,7 @@ SERVER_URL = os.getenv('SERVER_URL')
 
 SETTINGS['DEBUG'] = DEBUG
 SETTINGS['LOG_TO_FILE'] = 1 if DEBUG else 0
-SETTINGS['USE_DJANGO'] = 0 if DEBUG else 1
+SETTINGS['USE_DJANGO'] = 1 if DEBUG else 1
 SETTINGS['EXTRA_HEADERS'] = {"cache-control": "no-cache"} if DEBUG else {}
 SETTINGS['ALLOWED_HOSTS'] = [DOMAIN, f"*.{DOMAIN}"] if not DEBUG else ["*"]
 SETTINGS['ASYNC_HANDLING'] = 1
